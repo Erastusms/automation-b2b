@@ -22,7 +22,7 @@ const { login } = require("./login");
   ]);
 
   const testLogin = await login(page);
-  console.log("durasi login : " + testLogin);
-  
+  console.log(`durasi login : ${testLogin}`);
+
   //   await browser.close();
 })();
