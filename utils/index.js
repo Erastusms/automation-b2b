@@ -15,4 +15,11 @@ const clickElementByXPath = async (xpath) => {
   return false;
 };
 
-module.exports = { clickElementByXPath };
+const timeCalc = async (end, start) => {
+  let diff = (end - start) / 1000;
+  let roundDiff = diff.toFixed(2);
+
+  return roundDiff;
+};
+
+module.exports = { clickElementByXPath, timeCalc };

@@ -1,6 +1,7 @@
 const puppeteer = require("puppeteer");
 const { clickElementByXPath } = require("./utils");
 const { URL_B2B, selectorList } = require("./constant");
+const { login } = require("./login");
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -15,22 +16,13 @@ const { URL_B2B, selectorList } = require("./constant");
   }
 
   await page.goto(URL_B2B);
+  await Promise.all([
+    page.evaluate(clickElementByXPath, selectorList.XPathBtnTextLogin),
+    page.waitForNavigation(),
+  ]);
 
-  // XPath yang ingin Anda klik
-  // const xpathToClick =
-  //   '//*[@id="ctl00_panelWebsiteWidth"]/table/tbody/tr[1]/td/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td[2]/table/tbody/tr[1]/td[1]/a';
-
-  // Mengeksekusi fungsi untuk mengevaluasi dan mengklik XPath
-  const clicked = await page.evaluate(
-    clickElementByXPath,
-    selectorList.XPathBtnTextLogin
-  );
-
-  if (clicked) {
-    console.log("Elemen berhasil diklik.");
-  } else {
-    console.log("Elemen tidak ditemukan.");
-  }
-
+  const testLogin = await login(page);
+  console.log("durasi login : " + testLogin);
+  
   //   await browser.close();
 })();
