@@ -13,17 +13,26 @@ module.exports = {
       // Password
       await page.type(selectorList.inputPassword, dataLogin.password);
 
+      const clickLogin = await page.waitForSelector(selectorList.btnLogin, {
+        visible: true,
+      });
+      //   await Promise.all([
+      //     page.evaluate(() => {
+      //       document.getElementById(selectorList.btnLogin).click();
+      //     }),
+      //     // page.waitForNavigation({ waitUntil: "networkidle0" }),
+      //     page.waitForNavigation(),
+      //   ]);
+
       await Promise.all([
-        page.evaluate(() => {
-          document.getElementById(selectorList.btnLogin).click();
-        }),
-        // page.waitForNavigation({ waitUntil: "networkidle0" }),
-        page.waitForNavigation(),
+        clickLogin.click(),
+        page.waitForNavigation({ waitUntil: "networkidle0" }),
       ]);
 
       let end = performance.now();
       let duration = await timeCalc(end, start);
-
+      console.log("duration");
+      console.log(duration);
       return {
         duration,
       };

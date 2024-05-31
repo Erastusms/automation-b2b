@@ -10,7 +10,11 @@ const selectorList = {
     '//*[@id="ctl00_panelWebsiteWidth"]/table/tbody/tr[1]/td/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td[2]/table/tbody/tr[1]/td[1]/a',
   inputUsername: "#ctl00_ContentPlaceHolder1_txtUserName",
   inputPassword: "#ctl00_ContentPlaceHolder1_txtPassword",
-  btnLogin: "ctl00_ContentPlaceHolder1_btnLogin",
+  btnLogin: "#ctl00_ContentPlaceHolder1_btnLogin",
+  XPathBtnOKAddToCart: '//*[@id="ucModalProductSuccessAdd_ButtonOk"]/td/input',
+  searchField: "#txtSearchEngine1",
+  searchWord: "gsmf",
+  searchBtn: '"#btnSearchEngine1"',
 };
 
 module.exports = {
