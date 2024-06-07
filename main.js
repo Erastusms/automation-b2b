@@ -1,8 +1,9 @@
 const puppeteer = require("puppeteer");
-const { clickElementByXPath } = require("./utils");
-const { URL_B2B, selectorList } = require("./constant");
-const { login } = require("./login");
-const {search} = require("./search");
+const { URL, selectorList } = require("./constant");
+const { getHtmlData } = require("./utils/generateHtml");
+const { loginPage } = require("./pages/loginPage");
+const { homePage } = require("./pages/homePage");
+const { clickElementByXPath, generatePdf, dateDifference } = require("./utils");
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -10,74 +11,149 @@ const {search} = require("./search");
     defaultViewport: false,
     args: ["--start-maximized"],
   });
+  // const browser = await puppeteer.launch();
+
   const page = await browser.newPage();
   const pages = await browser.pages();
   if (pages.length > 1) {
     await pages[0].close();
   }
+  let startDate = new Date();
 
-  await page.goto(URL_B2B);
-  await Promise.all([
-    page.evaluate(clickElementByXPath, selectorList.XPathBtnTextLogin),
-    page.waitForNavigation(),
-  ]);
+  try {
+    await page.goto(URL.home);
+    await Promise.all([
+      page.evaluate(clickElementByXPath, selectorList.XPathBtnTextLogin),
+      page.waitForNavigation(),
+    ]);
 
-  const testLogin = await login(page);
-  console.log(`durasi login : ${testLogin}`);
+    const loginTest = await loginPage(page);
+    console.log("loginTest");
+    console.log(loginTest);
 
-  // await page.type("#txtSearchEngine1", "gsmf");
-  // const btnSearch = await page.waitForSelector("#btnSearchEngine1", {
-  //   visible: true,
-  // });
+    const homeTest = await homePage(page);
+    console.log("homeTest");
+    console.log(homeTest);
 
-  // await Promise.all([
-  //   btnSearch.click(),
-  //   page.waitForNavigation({ waitUntil: "networkidle0" }),
-  // ]);
+    const mergedObject = { ...loginTest, ...homeTest };
+    console.log(mergedObject);
 
-  const testSearch = await search(page);
+    // const imgIconCart = await page.waitForSelector("#imgIconCart", {
+    //   visible: true,
+    // });
 
+    // await Promise.all([
+    //   imgIconCart.click(),
+    //   page.waitForNavigation({ waitUntil: "networkidle2" }),
+    // ]);
 
-  const addToCart = await page.waitForSelector("#btnAddToCart_GSMF-GTZ-8V", {
-    visible: true,
-  });
-  await Promise.all([addToCart.click(), page.waitForNavigation()]);
+    // pada halaman cart
+    // await page.type("#txtPartNumber", "GSMF-GTZ-4V");
+    // await page.type("#txtQuantity", "5");
 
-  // let okButton = document.querySelector('button[value="ok"]');
+    // const btnAddItem = await page.waitForSelector("#btnAddItem", {
+    //   visible: true,
+    // });
 
-  // const okBtn = await page.waitForSelector(
-  //   "#ucModalProductSuccessAdd_ButtonOk > td > input",
-  //   { hidden: true }
-  // );
+    // await btnAddItem.click();
+    // await waiting(2000);
 
-  // await okBtn.click();
+    // await page.type("#txtPartNumber", "GSMF-GTZ-8V");
+    // await page.type("#txtQuantity", "5");
 
-  // await Promise.all([
-  //   page.evaluate(clickElementByXPath, selectorList.XPathBtnOKAddToCart),
-  //   page.waitForNavigation(),
-  // ]);
-  // await page.evaluate(() => {
-  //   const okButton = document.querySelector(
-  //     "#ucModalProductSuccessAdd_ButtonOk > td > input"
-  //   );
-  //   page.locator(okButton).click();
-  // });
+    // await btnAddItem.click();
 
-  // Query for an element handle.
-  // const element = await page.waitForSelector('tr > td > input.ButtonAction');
+    // console.log("Waiting for selector...");
+    // const btnSelectVoucher = await page.waitForSelector("#btnSelectVoucher", {
+    //   visible: true,
+    // });
 
-  // Do something with element...
-  // await element.click();
-  // Tangkap peristiwa saat popup muncul
-  // page.on("dialog", async (dialog) => {
-  //   console.log("Popup muncul:", dialog.message());
-  //   // Jika pesan popup sesuai dengan yang Anda harapkan, klik tombol "OK"
-  //   if (dialog.message() === "Your expected popup message") {
-  //     await dialog.accept(); // Klik tombol "OK"
-  //   } else {
-  //     await dialog.dismiss(); // Untuk menangani popup dengan cara lain
-  //   }
-  // });
+    // console.log("Scrolling to the element...");
+    // await page.evaluate(() => {
+    //   document
+    //     .querySelector("#btnSelectVoucher")
+    //     .scrollIntoView({ behavior: "smooth", block: "center" });
+    // });
+
+    // console.log("Berhasil scroll element");
+
+    // await waiting(2000);
+
+    // await btnSelectVoucher.click();
+
+    // const btnUseVoucher1 = await page.waitForSelector("#btnUseVoucher1", {
+    //   visible: true,
+    // });
+
+    // console.log("Scrolling to the element...");
+    // await page.evaluate(() => {
+    //   document
+    //     .querySelector("#btnUseVoucher1")
+    //     .scrollIntoView({ behavior: "smooth", block: "center" });
+    // });
+    // await waiting(2000);
+
+    // await btnUseVoucher1.click();
+    // await waiting(1000);
+
+    // console.log("Waiting for selector...");
+    // //   const selector = 'input.ButtonAction[value="Ok"]';
+    // await page.waitForSelector("#ucModal1_ButtonText", {
+    //   visible: true,
+    // }); // Waiting for the button to be visible
+
+    // console.log("Clicking the element OK...");
+    // await page.click("#ucModal1_ButtonText"); // Clicking the button'
+
+    // console.log("Waiting for selector...");
+    // //   const selector = 'input.ButtonAction[value="Ok"]';
+    // const selector23 = 'a.fancybox-item.fancybox-close[title="Close"]';
+    // const tombolClose = await page.waitForSelector(selector23, {
+    //   visible: true,
+    // }); // Waiting for the element to be visible
+    // // Waiting for the button to be visible
+
+    // await waiting(1000);
+
+    // console.log("Clicking the element tombol close...");
+    // await tombolClose.click();
+
+    // await generatePdf(content, ["BRI"], ["Gunakan semua"], ["TESTING123"]);
+    let endDate = new Date();
+    let dateDiff = await dateDifference(endDate, startDate);
+
+    const htmlResult = await getHtmlData(
+      mergedObject,
+      startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB",
+      endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB",
+      dateDiff
+    );
+    
+    const pdfFilePath = await generatePdf(htmlResult);
+    const BASE_DIRECTORY = "D:/ProjectME/puppeteer-b2b/document/";
+
+    const filename = pdfFilePath.replace(BASE_DIRECTORY, "");
+    let attachmentData = { filename, pdfFilePath };
+    return attachmentData;
+    // await Promise.all([
+    //   btnUseVoucher1.click(),
+    //   page.waitForNavigation({ waitUntil: "networkidle0" }),
+    // ]);
+
+    // const btnTextOK = await page.waitForSelector("#ucModal1_ButtonText", {
+    //   visible: true,
+    // });
+
+    // await Promise.all([
+    //   btnTextOK.click(),
+    //   page.waitForNavigation({ waitUntil: "networkidle0" }),
+    // ]);
+  } catch (err) {
+    console.log("error");
+    console.log({
+      error: err,
+    });
+  }
 
   //   await browser.close();
 })();

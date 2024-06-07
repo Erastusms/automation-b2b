@@ -1,0 +1,19 @@
+const { login } = require("../components");
+const {
+  dataLogin: { username, password },
+} = require("../constant");
+
+const loginPage = async (page) => {
+  try {
+    const login_failed = await login(page, username, "test");
+    const login_success = await login(page, username, password);
+
+    return { login_failed, login_success };
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+module.exports = {
+  loginPage,
+};

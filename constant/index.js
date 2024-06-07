@@ -1,4 +1,7 @@
-const URL_B2B = "https://bisnis.astraotoshop.com/UI/eCommerce/Home.aspx";
+const URL = {
+  home: "https://bisnis.astraotoshop.com/UI/eCommerce/Home.aspx",
+  login: "https://bisnis.astraotoshop.com/UI/eCommerce/Login.aspx",
+};
 
 const dataLogin = {
   username: "1000013132",
@@ -14,11 +17,18 @@ const selectorList = {
   XPathBtnOKAddToCart: '//*[@id="ucModalProductSuccessAdd_ButtonOk"]/td/input',
   searchField: "#txtSearchEngine1",
   searchWord: "gsmf",
-  searchBtn: '"#btnSearchEngine1"',
+  searchBtn: "#btnSearchEngine1",
+  searchAddToCart: "#btnAddToCart_GSMF-GTZ-4V",
+  skuRecom: "#btnAddToCart_FP-06435-KPP-2700",
+  skuUnggulan: "#btnAddToCart_GSMF-GM5Z-3B",
+  skuUnggulanDetail: "#btnProductDetails_GSMF-GM5Z-3B",
+  skuUnggulanSparePart: "#btnAddToCart_TO-15601-AVZ-1800",
+  btnSuccessAddToCart: "input.ButtonAction[value='Ok']",
+  btnAddTroliDetail: "input.ButtonAction[value='Tambah Ke Troli']",
 };
 
 module.exports = {
-  URL_B2B,
+  URL,
   dataLogin,
   selectorList,
 };
