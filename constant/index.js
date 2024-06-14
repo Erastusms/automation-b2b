@@ -11,6 +11,12 @@ const dataLogin = {
 const selectorList = {
   XPathBtnTextLogin:
     '//*[@id="ctl00_panelWebsiteWidth"]/table/tbody/tr[1]/td/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td[2]/table/tbody/tr[1]/td[1]/a',
+  XPathTotalPoint:
+    '//*[@id="ctl00_panelWelcome"]/table/tbody/tr[2]/td/table/tbody/tr/td[1]/table/tbody/tr/td[2]',
+  XPathTotalKoin:
+    '//*[@id="ctl00_panelWelcome"]/table/tbody/tr[2]/td/table/tbody/tr/td[3]/table/tbody/tr/td[2]',
+  closeSelectorPoint: "#divPointV2_Step1_CloseButton",
+  closeSelectorKoin: 'a.fancybox-item.fancybox-close[title="Close"]',
   inputUsername: "#ctl00_ContentPlaceHolder1_txtUserName",
   inputPassword: "#ctl00_ContentPlaceHolder1_txtPassword",
   btnLogin: "#ctl00_ContentPlaceHolder1_btnLogin",
@@ -25,6 +31,10 @@ const selectorList = {
   skuUnggulanSparePart: "#btnAddToCart_TO-15601-AVZ-1800",
   btnSuccessAddToCart: "input.ButtonAction[value='Ok']",
   btnAddTroliDetail: "input.ButtonAction[value='Tambah Ke Troli']",
+  btnAddTroliDetailXPath: '//*[@id="tableDialogItemDetails"]/tbody/tr[5]/td/table/tbody/tr[2]/td/input',
+  cartIcon: "#imgIconCart",
+  cartAddItem: "#btnAddItem",
+  cartUseVoucher: "#btnUseVoucher1",
 };
 
 module.exports = {

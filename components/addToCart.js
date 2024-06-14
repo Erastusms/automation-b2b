@@ -2,6 +2,7 @@ const {
   selectorList: { btnAddTroliDetail, btnSuccessAddToCart },
 } = require("../constant");
 const { waiting, timeCalc } = require("../utils");
+const { scrollElement } = require("./scrollElement");
 
 module.exports = {
   addToCart: async (page, btnAddTroli, btnDetailSKU) => {
@@ -9,30 +10,56 @@ module.exports = {
     let start = performance.now();
     let btnDetail,
       clickBtnAddTroli,
-      btnOKAfterAddToCart = "";
+      btnOKAfterAddToCart,
+      end = "";
     const testing = [];
 
     try {
+      /* Untuk add product sekaligus banyak
+      const fetchDetails = await page.evaluate(() => {
+        const detailsArray = [];
+        const allDetails = document.querySelectorAll(
+          ".Item.ItemBox.Widget_Item"
+        );
+        allDetails.forEach((eachItem) => {
+          const itemTitle = eachItem.querySelector("tr>td>b").innerText;
+          const itemId = eachItem.querySelector("tr>td>input.ButtonAction").id;
+          // const itemPrice = eachItem.querySelector(".price_color").innerText;
+          // const imgUrl = eachItem.querySelector("img").src;
+
+          detailsArray.push({
+            title: itemTitle,
+            btnSelector: itemId,
+            // imageURL: imgUrl,
+          });
+        });
+        return detailsArray;
+      });
+      */
+
       const addToCartSKU = await page.waitForSelector(btnAddTroli, {
         visible: true,
       });
 
-      console.log("Scrolling to the element... " + btnAddTroli);
-      await page.evaluate((selector) => {
-        document
-          .querySelector(selector)
-          .scrollIntoView({ behavior: "smooth", block: "center" });
-      }, btnAddTroli);
+      // console.log("Scrolling to the element... " + btnAddTroli);
+      // await page.evaluate((selector) => {
+      //   document
+      //     .querySelector(selector)
+      //     .scrollIntoView({ behavior: "smooth"});
+      // }, btnAddTroli);
 
-      let end = performance.now();
+      // let end = performance.now();
 
-      const scroll_element = {
-        testCase: "Scroll Element To SKU",
-        duration: await timeCalc(end, start),
-        loginResponse,
-      };
+      // const scroll_element = {
+      //   testCase: "Scroll Element To SKU",
+      //   duration: await timeCalc(end, start),
+      //   loginResponse,
+      // };
+
+      const scroll_element = await scrollElement(page, btnAddTroli);
       testing.push(scroll_element);
 
+      // const skuTroli = [];
       if (btnDetailSKU) {
         console.log("test add to cart with click detail");
         start = performance.now();
@@ -64,11 +91,10 @@ module.exports = {
         };
 
         start = performance.now();
-        await waiting(1000);
         await page.waitForSelector(btnSuccessAddToCart, {
           visible: true,
         });
-
+        await waiting(1000);
         await page.click(btnSuccessAddToCart);
         end = performance.now();
 
@@ -79,13 +105,16 @@ module.exports = {
         };
         testing.push(btnDetail, clickBtnAddTroli, btnOKAfterAddToCart);
       } else {
-        start = performance.now();
-        await addToCartSKU.click();
-        await page.waitForSelector(btnSuccessAddToCart, {
-          visible: true,
-        });
-        end = performance.now();
+        // for (let i = 0; i < fetchDetails.length; i++) {
+        //   const { btnSelector, title } = fetchDetails[i];
 
+        //   start = performance.now();
+        //   const addToCartSKU = await page.waitForSelector(`#${btnSelector}`, {
+        //     visible: true,
+        //   });
+        //   end = performance.now();
+
+        await addToCartSKU.click();
         clickBtnAddTroli = {
           testCase: "Click Button Add To Cart",
           duration: await timeCalc(end, start),
@@ -93,9 +122,14 @@ module.exports = {
         };
 
         start = performance.now();
-        await page.click(btnSuccessAddToCart); // Clicking the button
+        await page.waitForSelector(btnSuccessAddToCart, {
+          visible: true,
+        });
+        await waiting(1000);
+        await page.click(btnSuccessAddToCart);
         end = performance.now();
 
+        // skuTroli.push(clickBtnAddTroli);
         btnOKAfterAddToCart = {
           testCase: "Click OK In Modal After Add To Cart",
           duration: await timeCalc(end, start),

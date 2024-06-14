@@ -126,6 +126,7 @@ const generatePdf = async (content) => {
   //   pointAmount === "" ? "-Tidak Menggunakan Poin" : "-poin=" + pointAmount;
 
   const currentDate = moment().format("YYYY-MM-DD");
+  const currentDateSec = moment().format("YYYYMMDD-HHmmss");
 
   let folderLocator = BASE_DIRECTORY + currentDate;
   console.log("folder", folderLocator);
@@ -138,7 +139,7 @@ const generatePdf = async (content) => {
   });
 
   pdfFilePath =
-    folderLocator + "/" + "Testing-B2B-" + new Date().getTime() + ".pdf";
+    folderLocator + "/" + "Testing-B2B-" + currentDateSec + ".pdf";
 
   console.log("pdfFilePath", pdfFilePath);
   await page.setContent(content, {

@@ -20,7 +20,7 @@ module.exports = {
         testCase: "Input Username",
         duration: await timeCalc(end, start),
         loginResponse,
-      };
+      }; 
 
       // Password
       start = performance.now();
