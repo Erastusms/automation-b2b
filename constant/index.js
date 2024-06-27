@@ -35,6 +35,7 @@ const selectorList = {
   cartIcon: "#imgIconCart",
   cartAddItem: "#btnAddItem",
   cartUseVoucher: "#btnUseVoucher1",
+  cartSelectVoucher: "#btnSelectVoucher"
 };
 
 module.exports = {

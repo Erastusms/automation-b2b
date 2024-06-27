@@ -43,9 +43,7 @@ module.exports = {
 
       // console.log("Scrolling to the element... " + btnAddTroli);
       // await page.evaluate((selector) => {
-      //   document
-      //     .querySelector(selector)
-      //     .scrollIntoView({ behavior: "smooth"});
+      //   document.querySelector(selector).scrollIntoView({ behavior: "smooth" });
       // }, btnAddTroli);
 
       // let end = performance.now();
@@ -56,13 +54,13 @@ module.exports = {
       //   loginResponse,
       // };
 
-      const scroll_element = await scrollElement(page, btnAddTroli);
+      const scroll_element = await scrollElement(start, page, btnAddTroli);
       testing.push(scroll_element);
 
       // const skuTroli = [];
       if (btnDetailSKU) {
         console.log("test add to cart with click detail");
-        start = performance.now();
+        // start = performance.now();
         const detailProduct = await page.waitForSelector(btnDetailSKU, {
           visible: true,
         });
@@ -112,9 +110,9 @@ module.exports = {
         //   const addToCartSKU = await page.waitForSelector(`#${btnSelector}`, {
         //     visible: true,
         //   });
-        //   end = performance.now();
 
         await addToCartSKU.click();
+        end = performance.now();
         clickBtnAddTroli = {
           testCase: "Click Button Add To Cart",
           duration: await timeCalc(end, start),

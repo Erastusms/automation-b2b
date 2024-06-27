@@ -1,9 +1,8 @@
 const { timeCalc } = require("../utils");
 
 module.exports = {
-  scrollElement: async (page, selectorElement) => {
+  scrollElement: async (start, page, selectorElement) => {
     let loginResponse = true;
-    let start = performance.now();
     try {
       console.log("Scrolling to the element... " + selectorElement);
       await page.evaluate((selector) => {

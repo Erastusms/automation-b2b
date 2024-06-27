@@ -1,6 +1,6 @@
 const { scrollElement } = require("../components");
 const {
-  selectorList: { cartIcon, cartAddItem, cartUseVoucher },
+  selectorList: { cartIcon, cartAddItem, cartUseVoucher, cartSelectVoucher },
 } = require("../constant");
 const { waiting, timeCalc } = require("../utils");
 
@@ -48,48 +48,93 @@ const cartPage = async (page) => {
 
     // await btnAddItem.click();
 
+    cart_page.push(clickButtonCart, clickAddItemCart);
     console.log("Waiting for selector...");
-    const btnSelectVoucher = await page.waitForSelector("#btnSelectVoucher", {
+    start = performance.now();
+    const btnSelectVoucher = await page.waitForSelector(cartSelectVoucher, {
       visible: true,
     });
 
-    const scrollBtnLihatVoucher = await scrollElement(page, btnSelectVoucher);
+    const scrollBtnLihatVoucher = await scrollElement(
+      start,
+      page,
+      cartSelectVoucher
+    );
+    console.log("scrollBtnLihatVoucher");
+    console.log(scrollBtnLihatVoucher);
+    cart_page.push(scrollBtnLihatVoucher);
 
     await waiting(1000);
-    await btnSelectVoucher.click();
 
+    start = performance.now();
+    await btnSelectVoucher.click();
+    await waiting(1000);
+    end = performance.now();
+
+    const clickBtnSelectVoucher = {
+      testCase: "Click Button Select Voucher",
+      duration: await timeCalc(end, start),
+      loginResponse,
+    };
+    cart_page.push(clickBtnSelectVoucher);
+
+    start = performance.now();
     const cartUseVoucher1 = await page.waitForSelector(cartUseVoucher, {
       visible: true,
     });
 
-    const scrollSelector = await scrollElement(page, cartUseVoucher);
+    const scrollSelector = await scrollElement(start, page, cartUseVoucher);
+    cart_page.push(scrollSelector);
+
     await waiting(1000);
 
+    start = performance.now();
     await cartUseVoucher1.click();
     await waiting(1000);
+    end = performance.now();
+
+    const clickUseVoucher1 = {
+      testCase: "Click Use Voucher",
+      duration: await timeCalc(end, start),
+      loginResponse,
+    };
+    cart_page.push(clickUseVoucher1);
 
     console.log("Waiting for selector...");
-    //   const selector = 'input.ButtonAction[value="Ok"]';
+    start = performance.now();
     await page.waitForSelector("#ucModal1_ButtonText", {
       visible: true,
     }); // Waiting for the button to be visible
 
     console.log("Clicking the element OK...");
     await page.click("#ucModal1_ButtonText"); // Clicking the button'
+    end = performance.now();
+
+    const clickButtonOK = {
+      testCase: "Click OK After Use Voucher",
+      duration: await timeCalc(end, start),
+      loginResponse,
+    };
+    cart_page.push(clickButtonOK);
 
     console.log("Waiting for selector...");
-    //   const selector = 'input.ButtonAction[value="Ok"]';
+    start = performance.now();
     const selector23 = 'a.fancybox-item.fancybox-close[title="Close"]';
     const tombolClose = await page.waitForSelector(selector23, {
       visible: true,
     });
 
     await waiting(1000);
-
-    console.log("Clicking the element tombol close...");
     await tombolClose.click();
+    end = performance.now();
 
-    cart_page.push(clickButtonCart, clickAddItemCart);
+    const clickCloseBtn = {
+      testCase: `Click Button Close`,
+      duration: await timeCalc(end, start),
+      loginResponse,
+    };
+    cart_page.push(clickCloseBtn);
+
     return { cart_page };
   } catch (err) {
     console.error(err);
