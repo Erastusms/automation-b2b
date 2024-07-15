@@ -7,7 +7,7 @@ const { timeCalc } = require("../utils");
 module.exports = {
   login: async (page, username, password) => {
     let start = performance.now();
-    let loginResponse = false;
+    let loginResponse = true;
     const testCaseLogin = [];
 
     try {

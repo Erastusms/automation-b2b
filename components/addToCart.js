@@ -75,11 +75,12 @@ module.exports = {
         };
 
         start = performance.now();
-        await page.waitForSelector(btnAddTroliDetail, {
+        const addTroliBtn = await page.waitForSelector(btnAddTroliDetail, {
           visible: true,
         });
 
-        await page.click(btnAddTroliDetail);
+        // await page.click(btnAddTroliDetail);
+        await addTroliBtn.click();
         end = performance.now();
 
         clickBtnAddTroli = {

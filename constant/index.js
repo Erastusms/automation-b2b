@@ -31,15 +31,55 @@ const selectorList = {
   skuUnggulanSparePart: "#btnAddToCart_TO-15601-AVZ-1800",
   btnSuccessAddToCart: "input.ButtonAction[value='Ok']",
   btnAddTroliDetail: "input.ButtonAction[value='Tambah Ke Troli']",
-  btnAddTroliDetailXPath: '//*[@id="tableDialogItemDetails"]/tbody/tr[5]/td/table/tbody/tr[2]/td/input',
+  btnAddTroliDetailXPath:
+    '//*[@id="tableDialogItemDetails"]/tbody/tr[5]/td/table/tbody/tr[2]/td/input',
   cartIcon: "#imgIconCart",
   cartAddItem: "#btnAddItem",
-  cartUseVoucher: "#btnUseVoucher1",
-  cartSelectVoucher: "#btnSelectVoucher"
+  cartUseVoucher1: "#btnUseVoucher1",
+  cartUseVoucher6: "#btnUseVoucher6",
+  cartSelectVoucher: "#btnSelectVoucher",
+  cartTextPartNumber: "#txtPartNumber",
+  cartTxtQuantity: "#txtQuantity",
 };
+
+const cartData = [
+  {
+    partNumber: "GSMF-GTZ-4V",
+    qty: "5",
+  },
+  {
+    partNumber: "GSCAL-105D31L",
+    qty: "2",
+  },
+  {
+    partNumber: "INMF-555-59",
+    qty: "12",
+  },
+  {
+    partNumber: "INMF-544-59",
+    qty: "1",
+  },
+  {
+    partNumber: "01-SPO-TL110/7017F",
+    qty: "5",
+  },
+];
+
+const cartDataWithVoucher = [
+  {
+    partNumber: "12-25017-00000",
+    qty: "100",
+  },
+  {
+    partNumber: "12-27517-00000",
+    qty: "200",
+  },
+];
 
 module.exports = {
   URL,
   dataLogin,
   selectorList,
+  cartData,
+  cartDataWithVoucher,
 };

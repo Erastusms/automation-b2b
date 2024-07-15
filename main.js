@@ -55,17 +55,17 @@ const { clickElementByXPath, generatePdf, dateDifference } = require("./utils");
     let endDate = new Date();
     let dateDiff = await dateDifference(endDate, startDate);
 
-    // const htmlResult = await getHtmlData(
-    //   mergedObject,
-    //   startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB",
-    //   endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB",
-    //   dateDiff
-    // );
+    const htmlResult = await getHtmlData(
+      mergedObject,
+      startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB",
+      endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB",
+      dateDiff
+    );
 
-    // const pdfFilePath = await generatePdf(htmlResult);
-    // const BASE_DIRECTORY = "D:/ProjectME/puppeteer-b2b/document/";
+    const pdfFilePath = await generatePdf(htmlResult);
+    const BASE_DIRECTORY = "D:/ProjectME/puppeteer-b2b/document/";
 
-    // const filename = pdfFilePath.replace(BASE_DIRECTORY, "");
+    const filename = pdfFilePath.replace(BASE_DIRECTORY, "");
     // let attachmentData = { filename, pdfFilePath };
     // console.log("attachmentData");
     // console.log(attachmentData);
