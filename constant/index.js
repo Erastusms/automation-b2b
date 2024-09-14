@@ -40,7 +40,17 @@ const selectorList = {
   cartSelectVoucher: "#btnSelectVoucher",
   cartTextPartNumber: "#txtPartNumber",
   cartTxtQuantity: "#txtQuantity",
+  cartIFrame: "#iframe1",
+  cartDownloadBtn: "#ctl00_ContentPlaceHolder1_btnDownload",
+  cartFileUpload: "#ctl00_ContentPlaceHolder1_fileupload",
+  cartUploadBtn: "#ctl00_ContentPlaceHolder1_btnUpload",
+  cartTextSearchVoucher: "#divSelectVoucher_txtSearch",
+  cartInputVoucher: "TUBE50",
+  cartSearchVoucherBtn: "#divSelectVoucher_btnSearch"
 };
+
+const pathDownload = "./downloads";
+const pathUpload = "./upload/Template-Cart.xlsx";
 
 const cartData = [
   {
@@ -82,4 +92,6 @@ module.exports = {
   selectorList,
   cartData,
   cartDataWithVoucher,
+  pathDownload,
+  pathUpload,
 };

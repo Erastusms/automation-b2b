@@ -6,7 +6,7 @@ const { scrollElement } = require("./scrollElement");
 
 module.exports = {
   addToCart: async (page, btnAddTroli, btnDetailSKU) => {
-    let loginResponse = true;
+    let isTestCaseSuccess = true;
     let start = performance.now();
     let btnDetail,
       clickBtnAddTroli,
@@ -51,7 +51,7 @@ module.exports = {
       // const scroll_element = {
       //   testCase: "Scroll Element To SKU",
       //   duration: await timeCalc(end, start),
-      //   loginResponse,
+      //   isTestCaseSuccess,
       // };
 
       const scroll_element = await scrollElement(start, page, btnAddTroli);
@@ -71,7 +71,7 @@ module.exports = {
         btnDetail = {
           testCase: "Click Detail Product",
           duration: await timeCalc(end, start),
-          loginResponse,
+          isTestCaseSuccess,
         };
 
         start = performance.now();
@@ -86,7 +86,7 @@ module.exports = {
         clickBtnAddTroli = {
           testCase: "Click Button Add To Cart",
           duration: await timeCalc(end, start),
-          loginResponse,
+          isTestCaseSuccess,
         };
 
         start = performance.now();
@@ -100,7 +100,7 @@ module.exports = {
         btnOKAfterAddToCart = {
           testCase: "Click OK In Modal After Add To Cart",
           duration: await timeCalc(end, start),
-          loginResponse,
+          isTestCaseSuccess,
         };
         testing.push(btnDetail, clickBtnAddTroli, btnOKAfterAddToCart);
       } else {
@@ -117,7 +117,7 @@ module.exports = {
         clickBtnAddTroli = {
           testCase: "Click Button Add To Cart",
           duration: await timeCalc(end, start),
-          loginResponse,
+          isTestCaseSuccess,
         };
 
         start = performance.now();
@@ -132,7 +132,7 @@ module.exports = {
         btnOKAfterAddToCart = {
           testCase: "Click OK In Modal After Add To Cart",
           duration: await timeCalc(end, start),
-          loginResponse,
+          isTestCaseSuccess,
         };
         testing.push(clickBtnAddTroli, btnOKAfterAddToCart);
       }
@@ -141,9 +141,9 @@ module.exports = {
     } catch (err) {
       let end = performance.now();
       let duration = await timeCalc(end, start);
-      loginResponse = err;
+      isTestCaseSuccess = err;
       return {
-        response: loginResponse,
+        response: isTestCaseSuccess,
         duration: duration,
       };
     }

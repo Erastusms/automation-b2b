@@ -3,8 +3,15 @@ const { PuppeteerScreenRecorder } = require("puppeteer-screen-recorder");
 
 const { URL, selectorList } = require("./constant");
 const { getHtmlData } = require("./utils/generateHtml");
-const { loginPage, homePage, searchPage, cartPage } = require("./pages");
+const {
+  loginPage,
+  homePage,
+  searchPage,
+  cartPage,
+  laporanPage,
+} = require("./pages");
 const { clickElementByXPath, generatePdf, dateDifference } = require("./utils");
+const { successOrderWithVoucher } = require("./test/scenario-1");
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -32,6 +39,14 @@ const { clickElementByXPath, generatePdf, dateDifference } = require("./utils");
       page.waitForNavigation(),
     ]);
 
+    // page.on("response", async (response) => {
+    //   // console.log(response.url()[0]);
+    //   if (response.status() === 200) {
+    //     const webURL = response.url();
+    //     console.log(`URL: ${webURL}`);
+    //   }
+    // });
+
     const loginTest = await loginPage(page);
     // console.log("loginTest");
     // console.log(loginTest);
@@ -40,16 +55,24 @@ const { clickElementByXPath, generatePdf, dateDifference } = require("./utils");
     // console.log("homeTest");
     // console.log(homeTest);
 
-    const searchTest = await searchPage(page);
-    // console.log("searchTest");
-    // console.log(searchTest);
-
     const cartTest = await cartPage(page);
     // console.log("cartTest");
     // console.log(cartTest);
 
-    const mergedObject = { ...loginTest, ...homeTest, ...searchTest, ...cartTest };
+    const laporanTest = await laporanPage(page);
+    // console.log("laporanTest");
+    // console.log(laporanTest);
+
+    const mergedObject = {
+      ...loginTest,
+      ...homeTest,
+      // ...searchTest,
+      ...cartTest,
+      ...laporanTest,
+    };
     console.log(mergedObject);
+
+    // const createSuccessOrder = await successOrderWithVoucher(page);
 
     // await generatePdf(content, ["BRI"], ["Gunakan semua"], ["TESTING123"]);
     let endDate = new Date();

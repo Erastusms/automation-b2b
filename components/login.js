@@ -7,7 +7,7 @@ const { timeCalc } = require("../utils");
 module.exports = {
   login: async (page, username, password) => {
     let start = performance.now();
-    let loginResponse = true;
+    let isTestCaseSuccess = true;
     const testCaseLogin = [];
 
     try {
@@ -19,8 +19,8 @@ module.exports = {
       const inputUsernameCase = {
         testCase: "Input Username",
         duration: await timeCalc(end, start),
-        loginResponse,
-      }; 
+        isTestCaseSuccess,
+      };
 
       // Password
       start = performance.now();
@@ -30,7 +30,7 @@ module.exports = {
       const inputPasswordCase = {
         testCase: "Input Password",
         duration: await timeCalc(end, start),
-        loginResponse,
+        isTestCaseSuccess,
       };
 
       start = performance.now();
@@ -40,13 +40,14 @@ module.exports = {
 
       await Promise.all([
         clickLogin.click(),
-        page.waitForNavigation({ waitUntil: "networkidle2" }),
+        page.waitForNavigation(),
+        // page.waitForNavigation({ waitUntil: "networkidle0" }),
       ]);
       end = performance.now();
 
       const currentUrl = page.url();
 
-      if (currentUrl === URL.home) loginResponse = true;
+      if (currentUrl === URL.home) isTestCaseSuccess = true;
       if (currentUrl === URL.login) {
         const clickUsername = await page.waitForSelector(inputUsername, {
           visible: true,
@@ -58,7 +59,7 @@ module.exports = {
       const btnLoginClick = {
         testCase: "Click Button Login",
         duration: await timeCalc(end, start),
-        loginResponse,
+        isTestCaseSuccess,
       };
 
       testCaseLogin.push(inputUsernameCase, inputPasswordCase, btnLoginClick);
@@ -66,9 +67,9 @@ module.exports = {
     } catch (err) {
       let end = performance.now();
       let duration = await timeCalc(end, start);
-      loginResponse = err;
+      isTestCaseSuccess = err;
       return {
-        response: loginResponse,
+        response: isTestCaseSuccess,
         duration: duration,
       };
     }

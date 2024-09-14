@@ -9,7 +9,7 @@ const {
 const { clickElementByXPath, waiting, timeCalc } = require("../utils");
 
 const clickPoinKoin = async (page, options) => {
-  const loginResponse = true;
+  const isTestCaseSuccess = true;
 
   try {
     let start = performance.now();
@@ -20,7 +20,7 @@ const clickPoinKoin = async (page, options) => {
     // page.on("response", (response) => {
     //   console.log(response.url());
     // });
-    page.on('console', msg => console.log('PAGE LOG:', msg.text()));
+    page.on("console", (msg) => console.log("PAGE LOG:", msg.text()));
 
     const ops = options.toLowerCase();
     const XPathSelector = ops === "koin" ? XPathTotalKoin : XPathTotalPoint;
@@ -33,7 +33,7 @@ const clickPoinKoin = async (page, options) => {
     const clickPoinKoinBtn = {
       testCase: `Click Button ${options}`,
       duration: await timeCalc(end, start),
-      loginResponse,
+      isTestCaseSuccess,
     };
     const bodyPoinSelector = "#divSelectPointV2_Step1";
     const bodyKoinSelector = "#LoyaltyPoint_GridBody";
@@ -55,7 +55,7 @@ const clickPoinKoin = async (page, options) => {
     const clickCloseBtn = {
       testCase: `Click Button Close`,
       duration: await timeCalc(end, start),
-      loginResponse,
+      isTestCaseSuccess,
     };
 
     await waiting(1000);

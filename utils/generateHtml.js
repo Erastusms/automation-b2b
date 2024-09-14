@@ -203,7 +203,7 @@ const getSummary = async (testCase, start, end, diff) => {
                   ? "border-bottom: 1px solid rgb(234, 234, 234);"
                   : ""
               }">${
-        testName[j].loginResponse === true
+        testName[j].isTestCaseSuccess === true
           ? '<i class="fas fa-check"></i>'
           : '<i class="fas fa-times"></i>'
       }</td>

@@ -2,7 +2,7 @@ const { timeCalc } = require("../utils");
 
 module.exports = {
   scrollElement: async (start, page, selectorElement) => {
-    let loginResponse = true;
+    let isTestCaseSuccess = true;
     try {
       console.log("Scrolling to the element... " + selectorElement);
       await page.evaluate((selector) => {
@@ -15,14 +15,14 @@ module.exports = {
       return {
         testCase: "Scroll Element",
         duration: await timeCalc(end, start),
-        loginResponse,
+        isTestCaseSuccess,
       };
     } catch (err) {
       let end = performance.now();
       let duration = await timeCalc(end, start);
-      loginResponse = err;
+      isTestCaseSuccess = err;
       return {
-        response: loginResponse,
+        response: isTestCaseSuccess,
         duration: duration,
       };
     }

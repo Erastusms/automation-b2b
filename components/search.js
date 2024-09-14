@@ -6,7 +6,7 @@ const { timeCalc } = require("../utils");
 module.exports = {
   search: async (page) => {
     let start = performance.now();
-    let loginResponse = true;
+    let isTestCaseSuccess = true;
 
     try {
       await page.type(searchField, searchWord);
@@ -15,7 +15,7 @@ module.exports = {
       const inputSearchWord = {
         testCase: "Input Search Word",
         duration: await timeCalc(end, start),
-        loginResponse,
+        isTestCaseSuccess,
       };
 
       start = performance.now();
@@ -32,16 +32,16 @@ module.exports = {
       const clickBtnSearch = {
         testCase: "Click Button Search",
         duration: await timeCalc(end, start),
-        loginResponse,
+        isTestCaseSuccess,
       };
 
       return [inputSearchWord, clickBtnSearch];
     } catch (err) {
       let end = performance.now();
       let duration = await timeCalc(end, start);
-      loginResponse = err;
+      isTestCaseSuccess = err;
       return {
-        response: loginResponse,
+        response: isTestCaseSuccess,
         duration: duration,
       };
     }
