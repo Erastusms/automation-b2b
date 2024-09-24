@@ -1,8 +1,8 @@
 const puppeteer = require("puppeteer");
 const { PuppeteerScreenRecorder } = require("puppeteer-screen-recorder");
 
-const { URL, selectorList } = require("./constant");
-const { getHtmlData } = require("./utils/generateHtml");
+const { URL } = require("./config");
+const { selectorList } = require("./constant");
 const {
   loginPage,
   homePage,
@@ -16,6 +16,9 @@ const {
   sendEmailWithPDF,
 } = require("./utils");
 const { successOrderWithVoucher } = require("./test/scenario-1");
+const { getHtmlData } = require("./utils/generateHtml");
+const { generatePDF } = require("./utils/generatePdf");
+const { emailSender } = require("./utils/emailSender");
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -59,6 +62,10 @@ const { successOrderWithVoucher } = require("./test/scenario-1");
     // console.log("homeTest");
     // console.log(homeTest);
 
+    const searchTest = await searchPage(page);
+    // console.log("cartTest");
+    // console.log(cartTest);
+
     const cartTest = await cartPage(page);
     // console.log("cartTest");
     // console.log(cartTest);
@@ -70,7 +77,7 @@ const { successOrderWithVoucher } = require("./test/scenario-1");
     const mergedObject = {
       ...loginTest,
       ...homeTest,
-      // ...searchTest,
+      ...searchTest,
       ...cartTest,
       ...laporanTest,
     };
@@ -89,11 +96,14 @@ const { successOrderWithVoucher } = require("./test/scenario-1");
       dateDiff
     );
 
-    // const pdfFilePath = await generatePdf(htmlResult);
-    const pdfFilePath = sendEmailWithPDF(htmlResult);
-    // const sendemailwithattachment = sendEmail(pdfFilePath);
+    const pdfFilePath = await generatePDF(htmlResult);
+    // const pdfFilePath = sendEmailWithPDF(htmlResult);
 
-    const BASE_DIRECTORY = "D:/ProjectME/puppeteer-b2b/document/";
+    // const sendemailwithattachment = sendEmail(pdfFilePath);
+    // Mengirim email
+    const emailResponse = await emailSender(pdfFilePath);
+
+    // const BASE_DIRECTORY = "D:/ProjectME/puppeteer-b2b/document/";
 
     // const filename = pdfFilePath.replace(BASE_DIRECTORY, "");
 

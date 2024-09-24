@@ -8,18 +8,18 @@ const homePage = async (page) => {
     const home_view_point = await clickPoinKoin(page, "Point");
     const home_view_koin = await clickPoinKoin(page, "Koin");
 
-    // const home_add_sku = await addToCart(page, skuRecom);
-    // const home_add_sku_with_detail = await addToCart(
-    //   page,
-    //   skuUnggulan,
-    //   skuUnggulanDetail
-    // );
+    const home_add_sku = await addToCart(page, skuRecom);
+    const home_add_sku_with_detail = await addToCart(
+      page,
+      skuUnggulan,
+      skuUnggulanDetail
+    );
 
     return {
       home_view_point,
       home_view_koin,
-      // home_add_sku,
-      // home_add_sku_with_detail,
+      home_add_sku,
+      home_add_sku_with_detail,
     };
   } catch (err) {
     console.error(err);

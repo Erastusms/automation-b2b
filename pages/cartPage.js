@@ -20,10 +20,9 @@ const {
   },
   cartData,
   cartDataWithVoucher,
-  pathDownload,
-  pathUpload,
 } = require("../constant");
 const { waiting, timeCalc } = require("../utils");
+const { pathDownload, pathUpload } = require("../config");
 
 const dataCart = [cartData, cartDataWithVoucher];
 
@@ -484,7 +483,7 @@ const cartPage = async (page) => {
       cart_page.push(clickButtonOK);
       await waiting(1000);
 
-      await page.waitForNavigation()
+      await page.waitForNavigation();
       // start = performance.now();
       // // console.log("Clicking the element OK...");
       // // await page.waitForSelector(".PaymentOnline_PaymentBox", {

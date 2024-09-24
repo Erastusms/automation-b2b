@@ -1,7 +1,7 @@
 const {
   selectorList: { inputUsername, inputPassword, btnLogin },
-  URL,
 } = require("../constant");
+const { URL } = require("../config");
 const { timeCalc } = require("../utils");
 
 module.exports = {

@@ -3,7 +3,7 @@
 const { login, clickPoinKoin, addToCart } = require("../components");
 const {
   dataLogin: { username, password },
-} = require("../constant");
+} = require("../config");
 const { cartPage } = require("../pages");
 const { timeCalc } = require("../utils");
 

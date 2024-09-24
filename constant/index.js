@@ -1,13 +1,3 @@
-const URL = {
-  home: "https://bisnis.astraotoshop.com/UI/eCommerce/Home.aspx",
-  login: "https://bisnis.astraotoshop.com/UI/eCommerce/Login.aspx",
-};
-
-const dataLogin = {
-  username: "1000013132",
-  password: "Christian1",
-};
-
 const selectorList = {
   XPathBtnTextLogin:
     '//*[@id="ctl00_panelWebsiteWidth"]/table/tbody/tr[1]/td/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td[2]/table/tbody/tr[1]/td[1]/a',
@@ -46,11 +36,8 @@ const selectorList = {
   cartUploadBtn: "#ctl00_ContentPlaceHolder1_btnUpload",
   cartTextSearchVoucher: "#divSelectVoucher_txtSearch",
   cartInputVoucher: "TUBE50",
-  cartSearchVoucherBtn: "#divSelectVoucher_btnSearch"
+  cartSearchVoucherBtn: "#divSelectVoucher_btnSearch",
 };
-
-const pathDownload = "./downloads";
-const pathUpload = "./upload/Template-Cart.xlsx";
 
 const cartData = [
   {
@@ -87,11 +74,7 @@ const cartDataWithVoucher = [
 ];
 
 module.exports = {
-  URL,
-  dataLogin,
   selectorList,
   cartData,
   cartDataWithVoucher,
-  pathDownload,
-  pathUpload,
 };

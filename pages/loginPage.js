@@ -1,7 +1,7 @@
 const { login } = require("../components");
 const {
   dataLogin: { username, password },
-} = require("../constant");
+} = require("../config");
 
 const loginPage = async (page) => {
   try {
