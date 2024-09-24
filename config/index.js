@@ -11,11 +11,12 @@ const dataLogin = {
 };
 
 const dataEmail = {
-    service: process.env.EMAIL_SERVICE,
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-    to: process.env.EMAIL_TO,
-}
+  service: process.env.EMAIL_SERVICE,
+  user: process.env.EMAIL_USER,
+  pass: process.env.EMAIL_PASS,
+  to: process.env.EMAIL_TO,
+  cc: process.env.EMAIL_CC,
+};
 
 const BASE_DIRECTORY = process.env.BASE_DIRECTORY;
 const pathDownload = process.env.PATH_DOWNLOAD;
