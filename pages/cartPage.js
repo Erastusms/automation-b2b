@@ -325,10 +325,10 @@ const cartPage = async (page) => {
     );
     await pilihMetodePembayaran.click();
     await waiting(1000);
-    //*[@id="ucPaymentChannel"]/table/tbody/tr[5]
-    await page.waitForSelector("#ucPaymentChannel", {
-      visible: true,
-    });
+    //*[@id="PaymentChannel_btnSelectPaymentChannel"]/table/tbody/tr[5]
+    // await page.waitForSelector("#PaymentChannel_btnSelectPaymentChannel", {
+    //   visible: true,
+    // });
     await waiting(1000);
     await page.click("#ucPaymentChannel > table > tbody > tr:nth-child(3)");
     end = performance.now();
@@ -343,13 +343,13 @@ const cartPage = async (page) => {
     await waiting(2000);
     // Langkah 1: Periksa status awal
     // let isHidden = await page.evaluate(() => {
-    //   const element = document.getElementById("ucPaymentChannel");
+    //   const element = document.getElementById("PaymentChannel_btnSelectPaymentChannel");
     //   return window.getComputedStyle(element).display === "none";
     // });
 
     // console.log("Sebelum diklik, elemen display: none?", isHidden);
 
-    // Langkah 2: Klik elemen yang mempengaruhi ucPaymentChannel
+    // Langkah 2: Klik elemen yang mempengaruhi PaymentChannel_btnSelectPaymentChannel
     // await page.click("#someTriggerElement"); // Ganti dengan selector yang sesuai
     // await waiting(1000);
     // const pilihMetodePembayaran = await page.waitForSelector(
@@ -359,11 +359,11 @@ const cartPage = async (page) => {
     //   }
     // );
     // await pilihMetodePembayaran.click();
-    // await page.click("#ucPaymentChannel > table > tbody > tr:nth-child(4)");
+    // await page.click("#PaymentChannel_btnSelectPaymentChannel > table > tbody > tr:nth-child(4)");
     // await waiting(1000);
     // Langkah 3: Periksa status setelah klik
     // isHidden = await page.evaluate(() => {
-    //   const element = document.getElementById("ucPaymentChannel");
+    //   const element = document.getElementById("PaymentChannel_btnSelectPaymentChannel");
     //   return window.getComputedStyle(element).display === "none";
     // });
 

@@ -10,7 +10,11 @@ const {
   cartPage,
   laporanPage,
 } = require("./pages");
-const { clickElementByXPath, generatePdf, dateDifference } = require("./utils");
+const {
+  clickElementByXPath,
+  dateDifference,
+  sendEmailWithPDF,
+} = require("./utils");
 const { successOrderWithVoucher } = require("./test/scenario-1");
 
 (async () => {
@@ -85,10 +89,16 @@ const { successOrderWithVoucher } = require("./test/scenario-1");
       dateDiff
     );
 
-    const pdfFilePath = await generatePdf(htmlResult);
+    // const pdfFilePath = await generatePdf(htmlResult);
+    const pdfFilePath = sendEmailWithPDF(htmlResult);
+    // const sendemailwithattachment = sendEmail(pdfFilePath);
+
     const BASE_DIRECTORY = "D:/ProjectME/puppeteer-b2b/document/";
 
-    const filename = pdfFilePath.replace(BASE_DIRECTORY, "");
+    // const filename = pdfFilePath.replace(BASE_DIRECTORY, "");
+
+    // const sendemail = sendEmail(pdfFilePath);
+
     // let attachmentData = { filename, pdfFilePath };
     // console.log("attachmentData");
     // console.log(attachmentData);

@@ -1,9 +1,14 @@
-// Fungsi untuk mengevaluasi XPath di dalam halaman
+require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const moment = require("moment");
-const puppeteer = require("puppeteer");
 const pdf = require("html-pdf");
+const nodemailer = require("nodemailer");
+const BASE_DIRECTORY = "D:/ProjectME/puppeteer-b2b/document/";
+const currentDate = moment().format("YYYY-MM-DD");
+const currentDateSec = moment().format("YYYYMMDD-HHmmss");
+const folderLocator = BASE_DIRECTORY + currentDate;
+const pdfFilePath = folderLocator + "/" + "Testing-B2B-" + currentDateSec + ".pdf";
 
 const clickElementByXPath = async (xpath) => {
   const elements = document.evaluate(
@@ -50,38 +55,6 @@ const waiting = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-// const generatePdf = async (page) => {
-//   // Read the HTML file
-//   const htmlFilePath = path.join(__dirname, "report.html");
-//   const htmlContent = fs.readFileSync(htmlFilePath, "utf8");
-//   await page.setContent(htmlContent, { waitUntil: "networkidle0" });
-
-//   // Get today's date as a string using Moment.js
-//   const dateString = moment().format("YYYY-MM-DD");
-
-//   // Define the output directory and file name
-//   const outputDir = path.join(__dirname, dateString);
-//   const pdfOutputPath = path.join(outputDir, "test-result.pdf");
-
-//   // Ensure the output directory exists
-//   if (!fs.existsSync(outputDir)) {
-//     fs.mkdirSync(outputDir);
-//   }
-
-//   console.log("sampai sini gak sih");
-//   // Generate a PDF and save it to the specified path
-//   await page.pdf({
-//     path: pdfOutputPath,
-//     format: "A4",
-//     printBackground: true,
-//   });
-
-//   // Close the browser
-//   await browser.close();
-//   // Read the current script file
-//   console.log(`PDF saved to ${pdfOutputPath}`);
-// };
-
 const contentHeader = `
    <span style="font-size: 10px;padding-left : 15px"><i>
          This is a custom PDF for Automation Test Result
@@ -96,39 +69,8 @@ const contentFooter = `
         </span>
         `;
 
-const BASE_DIRECTORY = "D:/ProjectME/puppeteer-b2b/document/";
-
-const generatePdf = async (content) => {
-  // Save HTML content to a file
-
-  // console.log('kupon:',couponUsed[0]);
-  // console.log('point:',pointAmount);
-
-  const browser = await puppeteer.launch({
-    headless: true,
-    defaultViewport: false,
-    args: ["--start-maximized"],
-  });
-  const page = await browser.newPage();
-
-  // Read HTML content from file and convert to PDF
-  let htmlFilePath = "";
-  let pdfFilePath = "";
-
-  // await fs.promises.writeFile('../html/page1.html', content);
-  await fs.promises.writeFile(BASE_DIRECTORY + "page.html", content);
-  // htmlFilePath = BASE_DIRECTORY + "page1.html";
-
-  // pdfFilePath = 'document/pdf-download-page1-' + currentDate.replace(/-/g, '') +'T'+ new Date().getHours() + new Date().getMinutes() +new Date().getSeconds()+'.pdf';
-  // let couponName =
-  //   couponUsed[0] === "" ? "-Tidak Menggunakan Kupon" : "-kupon=" + couponUsed;
-  // let pointUsed =
-  //   pointAmount === "" ? "-Tidak Menggunakan Poin" : "-poin=" + pointAmount;
-
-  const currentDate = moment().format("YYYY-MM-DD");
-  const currentDateSec = moment().format("YYYYMMDD-HHmmss");
-
-  let folderLocator = BASE_DIRECTORY + currentDate;
+const generatePDF = (htmlResult) => {
+  const opt = { format: "Letter" };
   console.log("folder", folderLocator);
   fs.access(folderLocator, function (err) {
     if (err && err.code === "ENOENT") {
@@ -138,35 +80,65 @@ const generatePdf = async (content) => {
     }
   });
 
-  pdfFilePath =
-    folderLocator + "/" + "Testing-B2B-" + currentDateSec + ".pdf";
+  return new Promise((resolve, reject) => {
+    pdf.create(htmlResult, opt).toFile(pdfFilePath, (err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        console.log("PDF berhasil dibuat: " + res.filename);
+        resolve(res.filename);
+      }
+    });
+  });
+};
 
-  console.log("pdfFilePath", pdfFilePath);
-  await page.setContent(content, {
-    waitUntil: "networkidle0",
+// Main function untuk menggenerate PDF lalu mengirim email
+// Fungsi untuk mengirim email setelah PDF selesai dibuat
+const sendEmail = (pdfFilePath) => {
+  // Konfigurasi transporter email
+  const transporter = nodemailer.createTransport({
+    service: process.env.EMAIL_SERVICE,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
   });
 
-  // await page.pdf({
-  //   path: pdfFilePath,
-  //   format: "A4",
-  //   printBackground: true,
-  //   displayHeaderFooter: true,
-  //   headerTemplate: contentHeader,
-  //   footerTemplate: contentFooter,
-  //   margin: {
-  //     top: "30px",
-  //     bottom: "40px",
-  //   },
-  // });
+  // Detail email
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: process.env.EMAIL_TO,
+    // cc: "app-portal.b2b@component.astra.co.id",
+    subject: `Testing B2B - ${currentDate}`,
+    text: `Testing B2B yang dilakukan pada ${currentDate} dengan report pada lampiran`,
+    attachments: [
+      {
+        filename: path.basename(pdfFilePath),
+        path: pdfFilePath, // Lampirkan file PDF yang telah di-generate
+      },
+    ],
+  };
 
-  pdf.create(content).toFile(pdfFilePath, (err, res) => {
-    if (err) return console.error(err);
-    console.log(`PDF generated at ${pdfFilePath}`);
+  // Kirim email
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.error("Gagal mengirim email:", err);
+    } else {
+      console.log("Email berhasil dikirim:", info.response);
+    }
   });
-  console.log("PDF file has been generated!");
-  // await browser.close();
-  // console.log(pdfFilePath)
-  return pdfFilePath;
+};
+
+// Main function untuk menggenerate PDF lalu mengirim email
+const sendEmailWithPDF = (htmlResult) => {
+  generatePDF(htmlResult)
+    .then((pdfFilePath) => {
+      // Setelah PDF berhasil dibuat, kirim email dengan lampiran PDF
+      sendEmail(pdfFilePath);
+    })
+    .catch((err) => {
+      console.error("Terjadi kesalahan:", err);
+    });
 };
 
 module.exports = {
@@ -175,5 +147,5 @@ module.exports = {
   timeCalc,
   dateDifference,
   waiting,
-  generatePdf,
+  sendEmailWithPDF,
 };
