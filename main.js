@@ -13,7 +13,7 @@ const {
 const {
   clickElementByXPath,
   dateDifference,
-  sendEmailWithPDF,
+  timeCalc,
 } = require("./utils");
 const { successOrderWithVoucher } = require("./test/scenario-1");
 const { getHtmlData } = require("./utils/generateHtml");
@@ -40,7 +40,15 @@ const { emailSender } = require("./utils/emailSender");
     // Start recording.
     // const recorder = new PuppeteerScreenRecorder(page);
     // await recorder.start("./report/video/simple.mp4");
-    await page.goto(URL.home);
+    let start = performance.now();
+    await page.goto(URL.home, { timeout: 0, waitUntil: "load" });
+    let end = performance.now();
+    const loginTime = {
+      testCase: "Login Time",
+      duration: await timeCalc(end, start),
+    };
+    console.log("waktu login");
+    console.log(loginTime);
     await Promise.all([
       page.evaluate(clickElementByXPath, selectorList.XPathBtnTextLogin),
       page.waitForNavigation(),

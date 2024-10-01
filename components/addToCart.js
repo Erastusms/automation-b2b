@@ -37,9 +37,9 @@ module.exports = {
       });
       */
 
-      const addToCartSKU = await page.waitForSelector(btnAddTroli, {
-        visible: true,
-      });
+      // const addToCartSKU = await page.waitForSelector(btnAddTroli, {
+      //   visible: true,
+      // });
 
       // console.log("Scrolling to the element... " + btnAddTroli);
       // await page.evaluate((selector) => {
@@ -54,8 +54,8 @@ module.exports = {
       //   isTestCaseSuccess,
       // };
 
-      const scroll_element = await scrollElement(start, page, btnAddTroli);
-      testing.push(scroll_element);
+      // const scroll_element = await scrollElement(start, page, btnAddTroli);
+      // testing.push(scroll_element);
 
       // const skuTroli = [];
       if (btnDetailSKU) {
@@ -89,20 +89,21 @@ module.exports = {
           isTestCaseSuccess,
         };
 
-        start = performance.now();
-        await page.waitForSelector(btnSuccessAddToCart, {
-          visible: true,
-        });
-        await waiting(1000);
-        await page.click(btnSuccessAddToCart);
-        end = performance.now();
+        // start = performance.now();
+        // await page.waitForSelector(btnSuccessAddToCart, {
+        //   visible: true,
+        // });
+        // await waiting(3000);
+        // await page.click(btnSuccessAddToCart);
+        // end = performance.now();
 
-        btnOKAfterAddToCart = {
-          testCase: "Click OK In Modal After Add To Cart",
-          duration: await timeCalc(end, start),
-          isTestCaseSuccess,
-        };
-        testing.push(btnDetail, clickBtnAddTroli, btnOKAfterAddToCart);
+        // btnOKAfterAddToCart = {
+        //   testCase: "Click OK In Modal After Add To Cart",
+        //   duration: await timeCalc(end, start),
+        //   isTestCaseSuccess,
+        // };
+        // testing.push(btnDetail, clickBtnAddTroli, btnOKAfterAddToCart);
+        testing.push(btnDetail, clickBtnAddTroli);
       } else {
         // for (let i = 0; i < fetchDetails.length; i++) {
         //   const { btnSelector, title } = fetchDetails[i];
@@ -111,6 +112,11 @@ module.exports = {
         //   const addToCartSKU = await page.waitForSelector(`#${btnSelector}`, {
         //     visible: true,
         //   });
+        const addToCartSKU = await page.waitForSelector(btnAddTroli, {
+          visible: true,
+        });
+        const scroll_element = await scrollElement(start, page, btnAddTroli);
+        testing.push(scroll_element);
 
         await addToCartSKU.click();
         end = performance.now();
@@ -120,22 +126,39 @@ module.exports = {
           isTestCaseSuccess,
         };
 
-        start = performance.now();
-        await page.waitForSelector(btnSuccessAddToCart, {
-          visible: true,
-        });
-        await waiting(1000);
-        await page.click(btnSuccessAddToCart);
-        end = performance.now();
+        // start = performance.now();
+        // await page.waitForSelector(btnSuccessAddToCart, {
+        //   visible: true,
+        // });
+        // await waiting(1000);
+        // await page.click(btnSuccessAddToCart);
+        // end = performance.now();
 
-        // skuTroli.push(clickBtnAddTroli);
-        btnOKAfterAddToCart = {
-          testCase: "Click OK In Modal After Add To Cart",
-          duration: await timeCalc(end, start),
-          isTestCaseSuccess,
-        };
-        testing.push(clickBtnAddTroli, btnOKAfterAddToCart);
+        // // skuTroli.push(clickBtnAddTroli);
+        // btnOKAfterAddToCart = {
+        //   testCase: "Click OK In Modal After Add To Cart",
+        //   duration: await timeCalc(end, start),
+        //   isTestCaseSuccess,
+        // };
+        // testing.push(clickBtnAddTroli, btnOKAfterAddToCart);
+        testing.push(clickBtnAddTroli);
       }
+
+      await waiting(3000);
+      start = performance.now();
+      await page.waitForSelector(btnSuccessAddToCart, {
+        visible: true,
+      });
+      await waiting(3000);
+      await page.click(btnSuccessAddToCart);
+      end = performance.now();
+
+      btnOKAfterAddToCart = {
+        testCase: "Click OK In Modal After Add To Cart",
+        duration: await timeCalc(end, start),
+        isTestCaseSuccess,
+      };
+      testing.push(btnOKAfterAddToCart);
 
       return testing;
     } catch (err) {

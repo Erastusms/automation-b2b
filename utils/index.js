@@ -57,23 +57,10 @@ const contentFooter = `
         </span>
         `;
 
-// Main function untuk menggenerate PDF lalu mengirim email
-// const sendEmailWithPDF = (htmlResult) => {
-//   generatePDF(htmlResult)
-//     .then((pdfFilePath) => {
-//       // Setelah PDF berhasil dibuat, kirim email dengan lampiran PDF
-//       sendEmail(pdfFilePath);
-//     })
-//     .catch((err) => {
-//       console.error("Terjadi kesalahan:", err);
-//     });
-// };
-
 module.exports = {
   clickElementByXPath,
   capitalizeArrayItems,
   timeCalc,
   dateDifference,
-  waiting,
-  // sendEmailWithPDF,
+  waiting
 };
