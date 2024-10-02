@@ -138,11 +138,8 @@ const { emailSender } = require("./utils/emailSender");
     //   page.waitForNavigation({ waitUntil: "networkidle0" }),
     // ]);
   } catch (err) {
-    console.log("error");
-    console.log({
-      error: err,
-    });
-    logToFile({ error: err });
+    console.error(err);
+    logToFile(`Error: ${err.message}`);
   }
 
   //   await browser.close();

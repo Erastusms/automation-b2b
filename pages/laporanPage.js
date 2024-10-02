@@ -1,5 +1,5 @@
 const { scrollElement } = require("../components");
-const { timeCalc, waiting } = require("../utils");
+const { timeCalc, waiting, logToFile } = require("../utils");
 
 const laporanPage = async (page) => {
   const laporan_page = [];
@@ -25,14 +25,14 @@ const laporanPage = async (page) => {
     await waiting(1000);
     await Promise.all([
       page.waitForSelector("#ddlStatus", { visible: true }),
-      page.select("#ddlStatus", "2"),
+      page.select("#ddlStatus", "1"),
     ]);
 
     await waiting(1000);
 
-    console.log("Click element payment");
+    logToFile("Klik element payment");
     await page.evaluate(() => {
-      const element = document.querySelector(".GridButtonEdit");
+      const element = document.querySelector(".GridButtonView");
       element.click(); // Mengklik elemen
     });
     // Cetak seluruh ID ke console
@@ -61,6 +61,7 @@ const laporanPage = async (page) => {
     return { laporan_page };
   } catch (err) {
     console.error(err);
+    logToFile(`Error: ${err.message}`);
   }
 };
 
