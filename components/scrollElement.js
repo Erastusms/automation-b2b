@@ -1,10 +1,11 @@
-const { timeCalc } = require("../utils");
+const { timeCalc, logToFile } = require("../utils");
 
 module.exports = {
   scrollElement: async (start, page, selectorElement) => {
     let isTestCaseSuccess = true;
     try {
-      console.log("Scrolling to the element... " + selectorElement);
+      logToFile(`Scrolling to the element: ${selectorElement}`)
+      // console.log("Scrolling to the element... " + selectorElement);
       await page.evaluate((selector) => {
         document
           .querySelector(selector)

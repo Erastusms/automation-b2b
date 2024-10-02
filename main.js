@@ -14,6 +14,7 @@ const {
   clickElementByXPath,
   dateDifference,
   timeCalc,
+  logToFile,
 } = require("./utils");
 const { successOrderWithVoucher } = require("./test/scenario-1");
 const { getHtmlData } = require("./utils/generateHtml");
@@ -105,7 +106,6 @@ const { emailSender } = require("./utils/emailSender");
     );
 
     const pdfFilePath = await generatePDF(htmlResult);
-    // const pdfFilePath = sendEmailWithPDF(htmlResult);
 
     // const sendemailwithattachment = sendEmail(pdfFilePath);
     // Mengirim email
@@ -142,6 +142,7 @@ const { emailSender } = require("./utils/emailSender");
     console.log({
       error: err,
     });
+    logToFile({ error: err });
   }
 
   //   await browser.close();

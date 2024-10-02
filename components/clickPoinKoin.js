@@ -6,7 +6,7 @@ const {
     closeSelectorKoin,
   },
 } = require("../constant");
-const { clickElementByXPath, waiting, timeCalc } = require("../utils");
+const { clickElementByXPath, waiting, timeCalc, logToFile } = require("../utils");
 
 const clickPoinKoin = async (page, options) => {
   const isTestCaseSuccess = true;
@@ -20,7 +20,7 @@ const clickPoinKoin = async (page, options) => {
     // page.on("response", (response) => {
     //   console.log(response.url());
     // });
-    page.on("console", (msg) => console.log("PAGE LOG:", msg.text()));
+    // page.on("console", (msg) => console.log("PAGE LOG:", msg.text()));
 
     const ops = options.toLowerCase();
     const XPathSelector = ops === "koin" ? XPathTotalKoin : XPathTotalPoint;
@@ -47,7 +47,8 @@ const clickPoinKoin = async (page, options) => {
     const closeBtn = await page.waitForSelector(closeSelector, {
       visible: true,
     });
-    console.log("Clicking the element tombol close... " + options);
+    // console.log("Clicking the element tombol close... " + options);
+    logToFile(`Clicking the element tombol close ${options}`);
     await closeBtn.click();
 
     end = performance.now();

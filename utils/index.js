@@ -1,3 +1,7 @@
+const fs = require('fs');
+const path = require('path');
+const moment = require("moment");
+
 const clickElementByXPath = async (xpath) => {
   const elements = document.evaluate(
     xpath,
@@ -57,10 +61,38 @@ const contentFooter = `
         </span>
         `;
 
+const logToFile = (message) => {
+  const baseFolder = path.join(__dirname, '..', 'logs'); // Folder 'logs' di dalam 'automation-b2b'
+  const currentDate = moment().format('DD-MM-YYYY'); // Format tanggal dengan moment
+  const currentTime = moment().format('YYYYMMDDHHmm'); // Format waktu dengan moment
+  const currentTimeInText = moment().format('YYYY-MM-DD HH:mm:ss'); // Format waktu dengan moment
+  const dateFolder = path.join(baseFolder, currentDate); // Subfolder dengan nama tanggal
+  const logFile = path.join(dateFolder, `${currentTime}.txt`); // File dengan nama waktu (hh-mm-ss.txt)
+
+  // Buat folder logs jika belum ada
+  if (!fs.existsSync(baseFolder)) {
+    fs.mkdirSync(baseFolder, { recursive: true });
+  }
+
+  // Buat folder dengan nama tanggal jika belum ada
+  if (!fs.existsSync(dateFolder)) {
+    fs.mkdirSync(dateFolder, { recursive: true });
+  }
+
+  const logMessage = `${currentTimeInText}: ${message}`;  // Tulis pesan log ke file
+  fs.appendFile(logFile, logMessage + '\n', (err) => {
+    if (err) throw err;
+  });
+
+  // Cetak log ke console juga
+  console.log(currentTimeInText + ": " + message);
+}
+
 module.exports = {
   clickElementByXPath,
   capitalizeArrayItems,
   timeCalc,
   dateDifference,
-  waiting
+  waiting,
+  logToFile
 };

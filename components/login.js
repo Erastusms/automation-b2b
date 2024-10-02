@@ -2,7 +2,7 @@ const {
   selectorList: { inputUsername, inputPassword, btnLogin },
 } = require("../constant");
 const { URL } = require("../config");
-const { timeCalc } = require("../utils");
+const { timeCalc, logToFile } = require("../utils");
 
 module.exports = {
   login: async (page, username, password) => {
@@ -11,7 +11,8 @@ module.exports = {
     const testCaseLogin = [];
 
     try {
-      console.log("Login case dijalankan...");
+      // console.log("Login case dijalankan...");
+      logToFile("Login case dijalankan...");
       // Username
       await page.type(inputUsername, username);
       let end = performance.now();
