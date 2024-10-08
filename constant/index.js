@@ -37,6 +37,9 @@ const selectorList = {
   cartTextSearchVoucher: "#divSelectVoucher_txtSearch",
   cartInputVoucher: "TUBE50",
   cartSearchVoucherBtn: "#divSelectVoucher_btnSearch",
+  inputUsernameAdminB2B: "#txtClientCode",
+  inputPasswordAdminB2B: "#txtPassport1",
+  btnLoginAdminB2B: ".btn.ripple.btn-primary",
 };
 
 const cartData = [

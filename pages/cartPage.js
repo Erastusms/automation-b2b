@@ -1,6 +1,11 @@
 const fs = require("fs");
 const path = require("path");
-const { scrollElement } = require("../components");
+const {
+  scrollElement,
+  cart,
+  checkSuspend,
+  uploadDownload,
+} = require("../components");
 const {
   selectorList: {
     cartIcon,
@@ -10,10 +15,6 @@ const {
     cartSelectVoucher,
     cartTextPartNumber,
     cartTxtQuantity,
-    cartIFrame,
-    cartDownloadBtn,
-    cartFileUpload,
-    cartUploadBtn,
     cartTextSearchVoucher,
     cartInputVoucher,
     cartSearchVoucherBtn,
@@ -21,16 +22,34 @@ const {
   cartData,
   cartDataWithVoucher,
 } = require("../constant");
-const { waiting, timeCalc } = require("../utils");
+const { waiting, timeCalc, logToFile } = require("../utils");
 const { pathDownload, pathUpload } = require("../config");
+const { adminPage } = require("./adminPage");
 
 const dataCart = [cartData, cartDataWithVoucher];
 
 const cartPage = async (page) => {
-  const isTestCaseSuccess = true;
   const cart_page = [];
+  let isTestCaseSuccess = true;
+  let isFromHomePage = true;
   let start = performance.now();
   try {
+    const open_cart_page = await cart(page, isFromHomePage);
+    cart_page.push(open_cart_page);
+
+    await waiting(1000);
+
+    const isCustomerSuspend = await checkSuspend(page);
+    console.log("customer kena suspend gak? " + isCustomerSuspend);
+    if (isCustomerSuspend) {
+      isFromHomePage = false;
+      await adminPage(page);
+      await cart(page, isFromHomePage);
+    }
+
+    // pada halaman cart
+    logToFile("Masuk halaman cart");
+
     // Tentukan folder tempat file akan diunduh
     const downloadPath = path.resolve(pathDownload);
     fs.mkdirSync(downloadPath, { recursive: true });
@@ -41,79 +60,18 @@ const cartPage = async (page) => {
       downloadPath: downloadPath,
     });
 
-    const imgIconCart = await page.waitForSelector(cartIcon, {
-      visible: true,
-    });
-
-    await Promise.all([
-      imgIconCart.click(),
-      page.waitForNavigation({ waitUntil: "networkidle2" }),
-    ]);
-    let end = performance.now();
-
-    const clickButtonCart = {
-      testCase: "Click Button Cart",
-      duration: await timeCalc(end, start),
-      isTestCaseSuccess,
-    };
-
-    cart_page.push(clickButtonCart);
-
-    // pada halaman cart
-
-    console.log("Masuk halaman cart");
     page.on("dialog", async (dialog) => {
       await waiting(1000);
       await dialog.accept(); // Klik tombol "OK" di dialog alert
     });
 
-    await waiting(2000);
+    const downloadBtn = await uploadDownload(page, "DOWNLOAD");
+    cart_page.push(downloadBtn);
 
-    // Tunggu iframe untuk dimuat
-    start = performance.now();
-    await page.waitForSelector(cartIFrame, { visible: true });
+    await waiting(1000);
 
-    // Ambil handle ke iframe
-    const iframeHandle = await page.$(cartIFrame);
-    const iframeContent = await iframeHandle.contentFrame();
-
-    // Klik tombol input di dalam iframe
-    await iframeContent.click(cartDownloadBtn);
-    console.log("Tombol submit telah diklik.");
-    end = performance.now();
-
-    const clickDownloadBtn = {
-      testCase: "Click Button Download",
-      duration: await timeCalc(end, start),
-      isTestCaseSuccess,
-    };
-
-    cart_page.push(clickDownloadBtn);
-
-    start = performance.now();
-    const filePath = path.relative(process.cwd(), pathUpload);
-
-    await waiting(2000);
-    // Upload file dengan cara memasukkan path file ke input file
-    const inputUploadHandle = await iframeContent.$(cartFileUpload);
-    await inputUploadHandle.uploadFile(filePath);
-
-    console.log("File has been selected for upload.");
-
-    // Tunggu tombol upload tersedia dan klik tombol upload
-    await iframeContent.waitForSelector(cartUploadBtn);
-    await iframeContent.click(cartUploadBtn);
-
-    console.log("Upload button clicked.");
-    end = performance.now();
-
-    const clickUploadBtn = {
-      testCase: "Upload File Action",
-      duration: await timeCalc(end, start),
-      isTestCaseSuccess,
-    };
-
-    cart_page.push(clickUploadBtn);
+    const uploadBtn = await uploadDownload(page, "UPLOAD");
+    cart_page.push(uploadBtn);
 
     await waiting(2000);
 
@@ -133,10 +91,6 @@ const cartPage = async (page) => {
     await btnSelectVoucher.click();
     await waiting(1000);
     end = performance.now();
-
-    // await page.waitForSelector(cartTextSearchVoucher, {
-    //   visible: true,
-    // });
 
     start = performance.now();
     await page.type(cartTextSearchVoucher, cartInputVoucher);
@@ -275,7 +229,7 @@ const cartPage = async (page) => {
     console.log(textContent);
 
     console.log("Clicking the element OK...");
-    await page.click("#ucModal1_ButtonText"); // Clicking the button'
+    await page.click("#ucModal1_ButtonText"); // Clicking the button
     end = performance.now();
 
     const clickButtonOK = {
@@ -285,8 +239,6 @@ const cartPage = async (page) => {
     };
     cart_page.push(clickButtonOK);
     await waiting(1000);
-
-    //   console.log("Waiting for selector...");
 
     if (
       textContent ===
@@ -396,45 +348,8 @@ const cartPage = async (page) => {
 
     console.log("Setelah diklik, elemen display: none?", isHidden);
 
-    // const isStockAvailable = await page.evaluate(() => {
-    //   const alertConfirmStock = document.getElementById(
-    //     "ConfirmationStock_btnBatalkanPesanan"
-    //   );
-
-    //   console.log("alertConfirmStock");
-    //   console.log(alertConfirmStock);
-
-    //   if (alertConfirmStock) {
-    //     console.log("stok ada yang kosong");
-    //     return "N";
-    //   } else {
-    //     console.log("stok aman");
-    //     return "Y";
-    //   }
-    // });
-
-    // const pageStokKosong = await page.$(
-    //   "#ConfirmationStock_btnBatalkanPesanan"
-    // );
-    // console.log('pageStokKosong')
-    // console.log(pageStokKosong)
-    // let isStockAvailable = "Y";
-    // if (pageStokKosong) {
-    //   console.log(
-    //     "Elemen dengan ID ConfirmationStock_btnBatalkanPesanan sudah ter-load."
-    //   );
-    //   isStockAvailable = "N";
-    // } else {
-    //   console.log(
-    //     "Elemen dengan ID ConfirmationStock_btnBatalkanPesanan tidak ditemukan."
-    //   );
-    // }
-    // const modalStockAda = await page.$(".modal-content");
-    // console.log("textContentSendOrder");
-    // console.log(textContentSendOrder);
     let isStockAvailable = "Y";
     if (isHidden) {
-      //textnya masih salah jadi stoknya N
       console.log("stok ada");
     } else {
       console.log("stok abis");
@@ -456,7 +371,7 @@ const cartPage = async (page) => {
       end = performance.now();
 
       const clickButtonOK = {
-        testCase: "Click Batalkan Pesanan Karna ada stok kosong",
+        testCase: "Klik Batalkan Pesanan karna stok kosong",
         duration: await timeCalc(end, start),
         isTestCaseSuccess,
       };
@@ -521,10 +436,9 @@ const cartPage = async (page) => {
     // }
     return { cart_page };
   } catch (err) {
-    console.log("error");
-    console.log({
-      error: err,
-    });
+    isTestCaseSuccess = false;
+    console.error(err);
+    logToFile(`Error: ${err.message}`);
   }
 };
 

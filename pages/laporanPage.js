@@ -23,16 +23,17 @@ const laporanPage = async (page) => {
     laporan_page.push(clickLaporan);
     // console.log(clickLaporan);
     await waiting(1000);
+    // await page.select("#ddlStatus", "2");
     await Promise.all([
       page.waitForSelector("#ddlStatus", { visible: true }),
-      page.select("#ddlStatus", "1"),
+      page.select("#ddlStatus", "2"),
     ]);
 
     await waiting(1000);
 
     logToFile("Klik element payment");
     await page.evaluate(() => {
-      const element = document.querySelector(".GridButtonView");
+      const element = document.querySelector(".GridButtonEdit");
       element.click(); // Mengklik elemen
     });
     // Cetak seluruh ID ke console

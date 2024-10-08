@@ -1,6 +1,19 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 const moment = require("moment");
+const winston = require("winston");
+const logNode = require('node-file-logger');
+
+const optionsLogNode = {
+  folderPath: './logs/',
+  dateBasedFileNaming: true,
+  fileNamePrefix: 'DailyLogs_',
+  fileNameExtension: '.log',    
+  dateFormat: 'YYYY_MM_D',
+  timeFormat: 'h:mm:ss A',
+}
+
+logNode.SetUserOptions(optionsLogNode);
 
 const clickElementByXPath = async (xpath) => {
   const elements = document.evaluate(
@@ -47,6 +60,20 @@ const waiting = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
+const waitSelectorAdmin = async (page, selectorMenu, textSelector) => {
+  await page.waitForSelector(selectorMenu);
+  await page.evaluate(
+    (selectorMenu, textSelector) => {
+      const menuItems = [...document.querySelectorAll(selectorMenu)].find(
+        (item) => item.innerText.includes(textSelector)
+      );
+      if (menuItems) menuItems.click();
+    },
+    selectorMenu,
+    textSelector
+  );
+};
+
 const contentHeader = `
    <span style="font-size: 10px;padding-left : 15px"><i>
          This is a custom PDF for Automation Test Result
@@ -62,10 +89,10 @@ const contentFooter = `
         `;
 
 const logToFile = (message) => {
-  const baseFolder = path.join(__dirname, '..', 'logs'); // Folder 'logs' di dalam 'automation-b2b'
-  const currentDate = moment().format('DD-MM-YYYY'); // Format tanggal dengan moment
-  const currentTime = moment().format('YYYYMMDDHHmm'); // Format waktu dengan moment
-  const currentTimeInText = moment().format('YYYY-MM-DD HH:mm:ss'); // Format waktu dengan moment
+  const baseFolder = path.join(__dirname, "..", "logs"); // Folder 'logs' di dalam 'automation-b2b'
+  const currentDate = moment().format("DD-MM-YYYY"); // Format tanggal dengan moment
+  const currentTime = moment().format("YYYYMMDDHHmm"); // Format waktu dengan moment
+  const currentTimeInText = moment().format("YYYY-MM-DD HH:mm:ss"); // Format waktu dengan moment
   const dateFolder = path.join(baseFolder, currentDate); // Subfolder dengan nama tanggal
   const logFile = path.join(dateFolder, `${currentTime}.txt`); // File dengan nama waktu (hh-mm-ss.txt)
 
@@ -79,14 +106,24 @@ const logToFile = (message) => {
     fs.mkdirSync(dateFolder, { recursive: true });
   }
 
-  const logMessage = `${currentTimeInText}: ${message}`;  // Tulis pesan log ke file
-  fs.appendFile(logFile, logMessage + '\n', (err) => {
+  const logMessage = `${currentTimeInText}: ${message}`; // Tulis pesan log ke file
+  fs.appendFile(logFile, logMessage + "\n", (err) => {
     if (err) throw err;
   });
 
   // Cetak log ke console juga
   console.log(currentTimeInText + ": " + message);
-}
+};
+
+const logger = winston.createLogger({
+  level: "info", // Tingkat log minimal yang dicatat
+  format: winston.format.simple(), // Format log sederhana
+  transports: [
+    new winston.transports.Console(), // Catatan log ke konsol
+    new winston.transports.File({ filename: "app.log" }), // Catatan log ke file 'app.log'
+  ],
+});
+
 
 module.exports = {
   clickElementByXPath,
@@ -94,5 +131,8 @@ module.exports = {
   timeCalc,
   dateDifference,
   waiting,
-  logToFile
+  logToFile,
+  waitSelectorAdmin,
+  logger,
+  logNode
 };

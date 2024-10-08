@@ -6,7 +6,7 @@ const {
     closeSelectorKoin,
   },
 } = require("../constant");
-const { clickElementByXPath, waiting, timeCalc, logToFile } = require("../utils");
+const { clickElementByXPath, waiting, timeCalc, logToFile, logger } = require("../utils");
 
 const clickPoinKoin = async (page, options) => {
   const isTestCaseSuccess = true;
@@ -48,6 +48,7 @@ const clickPoinKoin = async (page, options) => {
       visible: true,
     });
     // console.log("Clicking the element tombol close... " + options);
+    logger.info(`Clicking the element tombol close ${options}`)
     logToFile(`Clicking the element tombol close ${options}`);
     await closeBtn.click();
 

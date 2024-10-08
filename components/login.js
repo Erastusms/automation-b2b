@@ -1,17 +1,16 @@
-const {
-  selectorList: { inputUsername, inputPassword, btnLogin },
-} = require("../constant");
 const { URL } = require("../config");
 const { timeCalc, logToFile } = require("../utils");
 
 module.exports = {
-  login: async (page, username, password) => {
+  login: async (page, options) => {
+    const { inputUsername, inputPassword, btnLogin, username, password } =
+      options;
+
     let start = performance.now();
     let isTestCaseSuccess = true;
     const testCaseLogin = [];
 
     try {
-      // console.log("Login case dijalankan...");
       logToFile("Login case dijalankan...");
       // Username
       await page.type(inputUsername, username);
@@ -48,7 +47,6 @@ module.exports = {
 
       const currentUrl = page.url();
 
-      if (currentUrl === URL.home) isTestCaseSuccess = true;
       if (currentUrl === URL.login) {
         const clickUsername = await page.waitForSelector(inputUsername, {
           visible: true,
@@ -68,7 +66,7 @@ module.exports = {
     } catch (err) {
       let end = performance.now();
       let duration = await timeCalc(end, start);
-      isTestCaseSuccess = err;
+      isTestCaseSuccess = false;
       return {
         response: isTestCaseSuccess,
         duration: duration,

@@ -15,11 +15,14 @@ const {
   dateDifference,
   timeCalc,
   logToFile,
+  logger,
+  logNode,
 } = require("./utils");
 const { successOrderWithVoucher } = require("./test/scenario-1");
 const { getHtmlData } = require("./utils/generateHtml");
 const { generatePDF } = require("./utils/generatePdf");
 const { emailSender } = require("./utils/emailSender");
+// const { cartPageCheckSuspend } = require("./pages/cartPageCheckSuspend");
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -42,7 +45,7 @@ const { emailSender } = require("./utils/emailSender");
     // const recorder = new PuppeteerScreenRecorder(page);
     // await recorder.start("./report/video/simple.mp4");
     let start = performance.now();
-    await page.goto(URL.home, { timeout: 0, waitUntil: "load" });
+    await page.goto(URL.home, { timeout: 0, waitUntil: "networkidle0" });
     let end = performance.now();
     const loginTime = {
       testCase: "Login Time",
@@ -50,6 +53,9 @@ const { emailSender } = require("./utils/emailSender");
     };
     console.log("waktu login");
     console.log(loginTime);
+    logger.log("info", loginTime);
+    logNode.Info(loginTime)
+    logToFile(loginTime);
     await Promise.all([
       page.evaluate(clickElementByXPath, selectorList.XPathBtnTextLogin),
       page.waitForNavigation(),
@@ -67,6 +73,10 @@ const { emailSender } = require("./utils/emailSender");
     // console.log("loginTest");
     // console.log(loginTest);
 
+    const cartTest = await cartPage(page);
+    // console.log("cartTest");
+    // console.log(cartTest);
+
     const homeTest = await homePage(page);
     // console.log("homeTest");
     // console.log(homeTest);
@@ -74,8 +84,11 @@ const { emailSender } = require("./utils/emailSender");
     const searchTest = await searchPage(page);
     // console.log("cartTest");
     // console.log(cartTest);
+    // const cartPageCheckSuspended = await cartPageCheckSuspend(page);
+    // console.log("cartTest");
+    // console.log(cartTest);
 
-    const cartTest = await cartPage(page);
+    // const cartTest = await cartPage(page);
     // console.log("cartTest");
     // console.log(cartTest);
 
@@ -90,7 +103,7 @@ const { emailSender } = require("./utils/emailSender");
       ...cartTest,
       ...laporanTest,
     };
-    console.log(mergedObject);
+    // console.log(mergedObject);
 
     // const createSuccessOrder = await successOrderWithVoucher(page);
 
@@ -122,21 +135,7 @@ const { emailSender } = require("./utils/emailSender");
     // console.log(attachmentData);
     // // Stop recording.
     // await recorder.stop();
-    // await browser.close();
-    // return attachmentData;
-    // await Promise.all([
-    //   btnUseVoucher1.click(),
-    //   page.waitForNavigation({ waitUntil: "networkidle0" }),
-    // ]);
-
-    // const btnTextOK = await page.waitForSelector("#ucModal1_ButtonText", {
-    //   visible: true,
-    // });
-
-    // await Promise.all([
-    //   btnTextOK.click(),
-    //   page.waitForNavigation({ waitUntil: "networkidle0" }),
-    // ]);
+    await browser.close();
   } catch (err) {
     console.error(err);
     logToFile(`Error: ${err.message}`);
