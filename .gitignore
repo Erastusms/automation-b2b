@@ -2,3 +2,4 @@ node_modules
 document/
 .env
 logs/
+app.log

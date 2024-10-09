@@ -1,6 +1,9 @@
 const { scrollElement } = require("../components");
 const { timeCalc, waiting, logToFile } = require("../utils");
 
+const FILTER_EXPIRED_NUMBER = "2";
+const optionStatusSelector = "#ddlStatus";
+
 const laporanPage = async (page) => {
   const laporan_page = [];
   let start = performance.now();
@@ -23,42 +26,62 @@ const laporanPage = async (page) => {
     laporan_page.push(clickLaporan);
     // console.log(clickLaporan);
     await waiting(1000);
-    // await page.select("#ddlStatus", "2");
-    await Promise.all([
-      page.waitForSelector("#ddlStatus", { visible: true }),
-      page.select("#ddlStatus", "2"),
-    ]);
+    await page.select(optionStatusSelector, FILTER_EXPIRED_NUMBER);
+    // await Promise.all([
+    //   page.waitForSelector("#ddlStatus", { visible: true }),
+    //   page.select("#ddlStatus", FILTER_EXPIRED_NUMBER),
+    // ]);
 
     await waiting(1000);
-
-    logToFile("Klik element payment");
-    await page.evaluate(() => {
-      const element = document.querySelector(".GridButtonEdit");
-      element.click(); // Mengklik elemen
-    });
-    // Cetak seluruh ID ke console
-    // console.log("IDs dalam #divWidget45_Carousel:", ids);
-    // await page.waitForNavigation({ waitUntil: "networkidle2" });
-
-    await waiting(2000);
-    start = performance.now();
-    const btnKembali = await page.waitForSelector("#btnCancel", {
-      visible: true,
-    });
-    const scrollLihatVA = await scrollElement(start, page, "#btnCancel");
-
-    laporan_page.push(scrollLihatVA);
-
+    await page.click("#btnSearch.ButtonAction");
     await waiting(1000);
-    await btnKembali.click();
-    end = performance.now();
-    const showPaymentVA = {
-      testCase: "Lihat Nomor VA Order",
-      duration: await timeCalc(end, start),
-      isTestCaseSuccess,
-    };
 
-    laporan_page.push(showPaymentVA);
+    // Periksa apakah teks "Tidak ada data dalam 31 hari terakhir" muncul
+    const isTextPresent = await page.evaluate((FILTER_EXPIRED_NUMBER) => {
+      const element = document.querySelector(
+        `#GridBody${FILTER_EXPIRED_NUMBER}`
+      );
+      return (
+        element &&
+        element.innerText.includes("Tidak ada data dalam 31 hari terakhir")
+      );
+    }, FILTER_EXPIRED_NUMBER);
+
+    // Log hasil pengecekan
+    if (isTextPresent) {
+      // ini udah bisa nanti lanjut bikin if lagi aje
+      console.log("Teks 'Tidak ada data dalam 31 hari terakhir' muncul.");
+    } else {
+      logToFile("Ada Order yang tercreate");
+      logToFile("Klik element payment");
+      await page.evaluate(() => {
+        const element = document.querySelector(".GridButtonView");
+        element.click(); // Mengklik elemen
+      });
+      // Cetak seluruh ID ke console
+      // console.log("IDs dalam #divWidget45_Carousel:", ids);
+      // await page.waitForNavigation({ waitUntil: "networkidle2" });
+
+      await waiting(2000);
+      start = performance.now();
+      const btnKembali = await page.waitForSelector("#btnCancel", {
+        visible: true,
+      });
+      const scrollLihatVA = await scrollElement(start, page, "#btnCancel");
+
+      laporan_page.push(scrollLihatVA);
+
+      await waiting(1000);
+      await btnKembali.click();
+      end = performance.now();
+      const showPaymentVA = {
+        testCase: "Lihat Nomor VA Order",
+        duration: await timeCalc(end, start),
+        isTestCaseSuccess,
+      };
+
+      laporan_page.push(showPaymentVA);
+    }
     return { laporan_page };
   } catch (err) {
     console.error(err);

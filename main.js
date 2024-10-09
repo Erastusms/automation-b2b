@@ -22,7 +22,6 @@ const { successOrderWithVoucher } = require("./test/scenario-1");
 const { getHtmlData } = require("./utils/generateHtml");
 const { generatePDF } = require("./utils/generatePdf");
 const { emailSender } = require("./utils/emailSender");
-// const { cartPageCheckSuspend } = require("./pages/cartPageCheckSuspend");
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -54,7 +53,7 @@ const { emailSender } = require("./utils/emailSender");
     console.log("waktu login");
     console.log(loginTime);
     logger.log("info", loginTime);
-    logNode.Info(loginTime)
+    logNode.Info(loginTime);
     logToFile(loginTime);
     await Promise.all([
       page.evaluate(clickElementByXPath, selectorList.XPathBtnTextLogin),
@@ -73,7 +72,7 @@ const { emailSender } = require("./utils/emailSender");
     // console.log("loginTest");
     // console.log(loginTest);
 
-    const cartTest = await cartPage(page);
+    // const cartTest = await cartPage(page);
     // console.log("cartTest");
     // console.log(cartTest);
 
@@ -88,7 +87,7 @@ const { emailSender } = require("./utils/emailSender");
     // console.log("cartTest");
     // console.log(cartTest);
 
-    // const cartTest = await cartPage(page);
+    const cartTest = await cartPage(page);
     // console.log("cartTest");
     // console.log(cartTest);
 
