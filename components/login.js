@@ -11,7 +11,6 @@ module.exports = {
     const testCaseLogin = [];
 
     try {
-      logToFile("Login case dijalankan...");
       // Username
       await page.type(inputUsername, username);
       let end = performance.now();

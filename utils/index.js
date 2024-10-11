@@ -2,16 +2,18 @@ const fs = require("fs");
 const path = require("path");
 const moment = require("moment");
 const winston = require("winston");
-const logNode = require('node-file-logger');
+const logNode = require("node-file-logger");
+const { createLogger, format, transports } = require("winston");
+const { combine, timestamp, printf } = format;
 
 const optionsLogNode = {
-  folderPath: './logs/',
+  folderPath: "./logs/",
   dateBasedFileNaming: true,
-  fileNamePrefix: 'DailyLogs_',
-  fileNameExtension: '.log',    
-  dateFormat: 'YYYY_MM_D',
-  timeFormat: 'h:mm:ss A',
-}
+  fileNamePrefix: "DailyLogs_",
+  fileNameExtension: ".log",
+  dateFormat: "YYYY_MM_D",
+  timeFormat: "h:mm:ss A",
+};
 
 logNode.SetUserOptions(optionsLogNode);
 
@@ -124,6 +126,21 @@ const logger = winston.createLogger({
   ],
 });
 
+// Format log
+const logFormat = printf(({ level, message, timestamp }) => {
+  const formattedDate = new Date().getTime();
+  return `${formattedDate} | ${level.toUpperCase()} | ${message}`;
+});
+// Logger configuration
+const loggerNew = createLogger({
+  level: "info", // Bisa diubah ke 'error' jika hanya ingin mencatat error
+  format: combine(timestamp(), logFormat),
+  transports: [
+    new transports.File({
+      filename: `report-${new Date().getTime()}.log`,
+    }),
+  ],
+});
 
 module.exports = {
   clickElementByXPath,
@@ -134,5 +151,6 @@ module.exports = {
   logToFile,
   waitSelectorAdmin,
   logger,
-  logNode
+  logNode,
+  loggerNew,
 };

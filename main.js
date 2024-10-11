@@ -17,6 +17,7 @@ const {
   logToFile,
   logger,
   logNode,
+  loggerNew,
 } = require("./utils");
 const { successOrderWithVoucher } = require("./test/scenario-1");
 const { getHtmlData } = require("./utils/generateHtml");
@@ -55,6 +56,7 @@ const { emailSender } = require("./utils/emailSender");
     logger.log("info", loginTime);
     logNode.Info(loginTime);
     logToFile(loginTime);
+    loggerNew.info(loginTime);
     await Promise.all([
       page.evaluate(clickElementByXPath, selectorList.XPathBtnTextLogin),
       page.waitForNavigation(),
