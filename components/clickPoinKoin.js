@@ -7,6 +7,10 @@ const {
   },
 } = require("../constant");
 const { clickElementByXPath, waiting, timeCalc, logToFile, logger } = require("../utils");
+const moment = require("moment");
+
+const logdatetime = moment().format("YYYY-MM-DD HH:mm:ss");
+
 
 const clickPoinKoin = async (page, options) => {
   const isTestCaseSuccess = true;
@@ -61,10 +65,12 @@ const clickPoinKoin = async (page, options) => {
     };
 
     await waiting(1000);
-
+    logger.info(`${JSON.stringify([clickPoinKoinBtn, clickCloseBtn])}`);
     return [clickPoinKoinBtn, clickCloseBtn];
+    
   } catch (err) {
     console.error(err);
+    logger.error(`${JSON.stringify(err.message)}`);
   }
 };
 

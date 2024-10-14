@@ -15,6 +15,19 @@ const optionsLogNode = {
   timeFormat: "h:mm:ss A",
 };
 
+
+const localTimestamp = timestamp({
+  format: () => new Date().toLocaleString('id-ID', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  })
+});
+
 logNode.SetUserOptions(optionsLogNode);
 
 const clickElementByXPath = async (xpath) => {
@@ -116,10 +129,19 @@ const logToFile = (message) => {
   // Cetak log ke console juga
   console.log(currentTimeInText + ": " + message);
 };
+//let logdatetime =moment().format("YYYY-MM-DD HH:mm:ss")
+const myFormat = printf(({ level, message, label, timestamp }) => {
+  return `${level}: ${timestamp} ${message}`;
+});
 
 const logger = winston.createLogger({
-  level: "info", // Tingkat log minimal yang dicatat
-  format: winston.format.simple(), // Format log sederhana
+  
+  //level: "info", // Tingkat log minimal yang dicatat
+  //format: winston.format.simple(), // Format log sederhana
+  format: combine(
+    localTimestamp,
+    myFormat
+  ),
   transports: [
     new winston.transports.Console(), // Catatan log ke konsol
     new winston.transports.File({ filename: "app.log" }), // Catatan log ke file 'app.log'

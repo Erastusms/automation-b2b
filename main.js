@@ -25,7 +25,8 @@ const { generatePDF } = require("./utils/generatePdf");
 const { emailSender } = require("./utils/emailSender");
 const moment = require("moment");
 
-let logdatetime = moment().format('MMMM Do YYYY, h:mm:ss a');
+const logdatetime = moment().format("YYYY-MM-DD HH:mm:ss");
+
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -56,13 +57,13 @@ let logdatetime = moment().format('MMMM Do YYYY, h:mm:ss a');
     };
     console.log("waktu login");
     console.log(loginTime);
-    logger.log("info", loginTime);
+    logger.info(`================================ AOS TESTING B2B ${logdatetime}  ================================`);
     logNode.Info(loginTime);
     logToFile(loginTime);
-    loggerNew.info(loginTime);
+    //loggerNew.info(loginTime);
     await Promise.all([
       page.evaluate(clickElementByXPath, selectorList.XPathBtnTextLogin),
-      logger.info(` ${logdatetime}|Login Button Found & Clicked`),
+      logger.info(`Login Button Found & Clicked`),
       page.waitForNavigation(),
     ]);
 

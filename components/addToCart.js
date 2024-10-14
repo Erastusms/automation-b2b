@@ -1,7 +1,7 @@
 const {
   selectorList: { btnAddTroliDetail, btnSuccessAddToCart },
 } = require("../constant");
-const { waiting, timeCalc, logToFile } = require("../utils");
+const { waiting, timeCalc, logToFile,logger } = require("../utils");
 const { scrollElement } = require("./scrollElement");
 
 module.exports = {
@@ -59,7 +59,8 @@ module.exports = {
 
       // const skuTroli = [];
       if (btnDetailSKU) {
-        logToFile("Klik lihat detail di home page")
+        //logToFile("Klik lihat detail di home page")
+        logger.info(`Click Detail button at Home Page`);
         // start = performance.now();
         const detailProduct = await page.waitForSelector(btnDetailSKU, {
           visible: true,
@@ -112,7 +113,10 @@ module.exports = {
         //   const addToCartSKU = await page.waitForSelector(`#${btnSelector}`, {
         //     visible: true,
         //   });
-        logToFile("Klik tambah ke troli di home page")
+        //logToFile("Klik tambah ke troli di home page")
+        logger.info(`Click Add to Cart Button at Home Page`);
+
+        
         const addToCartSKU = await page.waitForSelector(btnAddTroli, {
           visible: true,
         });
