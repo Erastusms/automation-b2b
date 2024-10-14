@@ -23,6 +23,9 @@ const { successOrderWithVoucher } = require("./test/scenario-1");
 const { getHtmlData } = require("./utils/generateHtml");
 const { generatePDF } = require("./utils/generatePdf");
 const { emailSender } = require("./utils/emailSender");
+const moment = require("moment");
+
+let logdatetime = moment().format('MMMM Do YYYY, h:mm:ss a');
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -59,6 +62,7 @@ const { emailSender } = require("./utils/emailSender");
     loggerNew.info(loginTime);
     await Promise.all([
       page.evaluate(clickElementByXPath, selectorList.XPathBtnTextLogin),
+      logger.info(` ${logdatetime}|Login Button Found & Clicked`),
       page.waitForNavigation(),
     ]);
 

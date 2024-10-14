@@ -1,5 +1,8 @@
 const { URL } = require("../config");
 const { timeCalc, logToFile } = require("../utils");
+const moment = require("moment");
+
+let logdatetime = moment().format('MMMM Do YYYY, h:mm:ss a');
 
 module.exports = {
   login: async (page, options) => {
@@ -13,6 +16,8 @@ module.exports = {
     try {
       // Username
       await page.type(inputUsername, username);
+      logger.info(` ${logdatetime}|inputUsername selector found & username input successfully`);
+
       let end = performance.now();
 
       const inputUsernameCase = {
@@ -24,6 +29,7 @@ module.exports = {
       // Password
       start = performance.now();
       await page.type(inputPassword, password);
+      logger.info(`${logdatetime}|inputPassword selector found & password input successfully`);
       end = performance.now();
 
       const inputPasswordCase = {
@@ -41,6 +47,7 @@ module.exports = {
         clickLogin.click(),
         page.waitForNavigation(),
         // page.waitForNavigation({ waitUntil: "networkidle0" }),
+        logger.info(` ${logdatetime}|Login Button Clicked`)
       ]);
       end = performance.now();
 
@@ -61,13 +68,16 @@ module.exports = {
       };
 
       testCaseLogin.push(inputUsernameCase, inputPasswordCase, btnLoginClick);
+      logger.info(`${logdatetime} ${JSON.stringify(testCaseLogin)}`);
       return testCaseLogin;
     } catch (err) {
       let end = performance.now();
       let duration = await timeCalc(end, start);
       isTestCaseSuccess = false;
+      logger.error(`${logdatetime} | ${err.message }`);
       return {
         response: isTestCaseSuccess,
+        message: err.message,
         duration: duration,
       };
     }
