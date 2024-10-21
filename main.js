@@ -16,17 +16,13 @@ const {
   timeCalc,
   logToFile,
   logger,
-  logNode,
-  loggerNew,
 } = require("./utils");
 const { successOrderWithVoucher } = require("./test/scenario-1");
 const { getHtmlData } = require("./utils/generateHtml");
 const { generatePDF } = require("./utils/generatePdf");
 const { emailSender } = require("./utils/emailSender");
 const moment = require("moment");
-
 const logdatetime = moment().format("YYYY-MM-DD HH:mm:ss");
-
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -57,10 +53,11 @@ const logdatetime = moment().format("YYYY-MM-DD HH:mm:ss");
     };
     console.log("waktu login");
     console.log(loginTime);
-    logger.info(`================================ AOS TESTING B2B ${logdatetime}  ================================`);
-    logNode.Info(loginTime);
+    logger.info(
+      `================================ AOS TESTING B2B ${logdatetime}  ================================`
+    );
+
     logToFile(loginTime);
-    //loggerNew.info(loginTime);
     await Promise.all([
       page.evaluate(clickElementByXPath, selectorList.XPathBtnTextLogin),
       logger.info(`Login Button Found & Clicked`),
@@ -88,11 +85,8 @@ const logdatetime = moment().format("YYYY-MM-DD HH:mm:ss");
     // console.log(homeTest);
 
     const searchTest = await searchPage(page);
-    // console.log("cartTest");
-    // console.log(cartTest);
-    // const cartPageCheckSuspended = await cartPageCheckSuspend(page);
-    // console.log("cartTest");
-    // console.log(cartTest);
+    // console.log("searchTest");
+    // console.log(searchTest);
 
     const cartTest = await cartPage(page);
     // console.log("cartTest");
@@ -126,15 +120,11 @@ const logdatetime = moment().format("YYYY-MM-DD HH:mm:ss");
 
     const pdfFilePath = await generatePDF(htmlResult);
 
-    // const sendemailwithattachment = sendEmail(pdfFilePath);
-    // Mengirim email
     const emailResponse = await emailSender(pdfFilePath);
 
     // const BASE_DIRECTORY = "D:/ProjectME/puppeteer-b2b/document/";
 
     // const filename = pdfFilePath.replace(BASE_DIRECTORY, "");
-
-    // const sendemail = sendEmail(pdfFilePath);
 
     // let attachmentData = { filename, pdfFilePath };
     // console.log("attachmentData");

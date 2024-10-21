@@ -1,0 +1,94 @@
+/* Global table styles */
+* {
+  padding: 5px 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  margin: 20px 0;
+}
+
+.aligned-table {
+  font-family: Arial, sans-serif;
+  border-spacing: 0;
+  border-collapse: collapse; /* Mencegah adanya garis antar sel */
+}
+
+.aligned-table td {
+  padding: 2px;
+  margin: 0;
+  text-align: left;
+  vertical-align: top;
+  border: none; /* Menghilangkan border pada setiap sel */
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+}
+
+/* Header styles */
+th {
+  /* background-color: #f4f4f4; */
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Hover effect for rows */
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* .centering {
+  text-align: center;
+} */
+
+.left-align {
+  text-align: left;
+}
+
+/* Style for PASS and FAIL labels */
+.status-pass,
+.status-fail {
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 20px;
+  color: white;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+/* Specific styles for PASS */
+.status-pass {
+  background-color: #4caf50; /* Green */
+}
+
+/* Specific styles for FAIL */
+.status-fail {
+  background-color: #f44336; /* Red */
+}
+
+/* Table design enhancements */
+table {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th {
+  background-color: #0277bd; /* Blue background */
+  color: white;
+}
+
+td {
+  font-size: 16px;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+}

@@ -13,7 +13,7 @@ module.exports = {
           .scrollIntoView({ behavior: "smooth", block: "end" });
       }, selectorElement);
       let end = performance.now();
-      logger.info(`Scroll Element ${selectorElement} Succes`);
+      logger.info(`Scroll Element ${selectorElement} Success`);
       return {
         testCase: "Scroll Element",
         duration: await timeCalc(end, start),

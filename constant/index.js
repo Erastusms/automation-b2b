@@ -35,7 +35,7 @@ const selectorList = {
   cartFileUpload: "#ctl00_ContentPlaceHolder1_fileupload",
   cartUploadBtn: "#ctl00_ContentPlaceHolder1_btnUpload",
   cartTextSearchVoucher: "#divSelectVoucher_txtSearch",
-  cartInputVoucher: "TUBE50",
+  cartInputVoucher: "FPBRAKESHOE50",
   cartSearchVoucherBtn: "#divSelectVoucher_btnSearch",
   inputUsernameAdminB2B: "#txtClientCode",
   inputPasswordAdminB2B: "#txtPassport1",

@@ -1,4 +1,7 @@
 const { capitalizeArrayItems } = require(".");
+const path = require("path");
+const fs = require("fs");
+const fsprom = require("fs").promises;
 
 const first = async (startTime, endTime, diffTime) => {
   let start = "";
@@ -170,7 +173,7 @@ const summaryEnd = `
       </div>
 `;
 
-const getSummary = async (testCase, start, end, diff) => {
+const getSummary = async (testCase, start, end, duration) => {
   let body = "";
   const firstHtml = await first(start, end, diff);
   const keys = Object.keys(testCase);
@@ -610,12 +613,91 @@ const endHtml = `
 </html>
 `;
 
-const getHtmlData = async (testCase, start, end, diff) => {
-  let section1 = await getSummary(testCase, start, end, diff);
-  //  let section2 = await detailHtml(custOrderDetail);
+const getHtmlData = async (testCase, startDate, endDate, duration) => {
+  //   let section1 = await getSummary(testCase, start, end, diff);
+  //   const keys = Object.keys(testCase);
+  //   console.log('keys')
+  //   console.log(keys)
+  //   const rows = keys.forEach((key, index) => {
+  //     const testName = testCase[key];
+  //     const keysLength = testName.length;
+  //     return `
+  //       <tr>
+  //     <td>${index + 1}. ${key.testCase}</td>
+  //     <td>${testName
+  //       .map((step, stepIndex) => `${stepIndex + 1}. ${step}`)
+  //       .join("<br>")}</td>
+  //                 <td class="center">
+  //                 <span class="success">&#10004;</span>
+  //               </td>
+  //               <td class="center">2s</td>
+  //     </tr>
+  //     `;
+  //   });
+  //  .join("");
 
-  //  let finalResult = section1+section2;
-  return section1;
+  const templatePath = path.join(__dirname, "../template/report.html");
+  const cssFilePath = path.join(__dirname, "../styles", "styles.css");
+  const cssContent = await fsprom.readFile(cssFilePath, "utf8");
+  const head = `
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">  
+   <title>Automation Testing</title>
+   <style>${cssContent}</style>`;
+
+  let htmlResult = fs.readFileSync(templatePath, "utf-8");
+  htmlResult = htmlResult.replace("{{reporthead}}", head);
+  htmlResult = htmlResult.replace("{{startDate}}", startDate);
+  htmlResult = htmlResult.replace("{{endDate}}", endDate);
+  htmlResult = htmlResult.replace("{{duration}}", duration);
+
+  // Panggil fungsi untuk memetakan data ke dalam HTML
+  const htmlReport = convertDataToHTML(testCase);
+  htmlResult = htmlResult.replace("{{rows}}", htmlReport);
+
+  fs.writeFileSync("test-report.html", htmlResult, "utf8");
+
+  console.log("HTML test report has been generated!");
+  return htmlResult;
+};
+
+// Fungsi untuk mapping data ke dalam format HTML
+const convertDataToHTML = (data) => {
+  let testNameIndex = 1; // Inisialisasi nomor urut untuk testName
+  let htmlContent = "";
+
+  Object.keys(data).forEach((testName) => {
+    let testCaseIndex = 1; // Inisialisasi nomor urut untuk testCase dalam setiap testName
+    const testCaseCount = data[testName].length; // Hitung jumlah testCase dalam satu testName
+
+    // Loop untuk setiap testCase dalam testName
+    data[testName].forEach((testCaseObj, index) => {
+      htmlContent += "<tr>";
+
+      // Hanya cetak testName di baris pertama, lalu gunakan rowspan untuk menggabungkan sel
+      if (index === 0) {
+        htmlContent += `<td class='left-align' rowspan="${testCaseCount}">
+        ${testNameIndex}. ${capitalizeArrayItems(testName)}</td>`;
+      }
+
+      htmlContent += `
+          <td class='left-align'>${testCaseIndex}. ${testCaseObj.testCase}</td>
+          <td><i>${testCaseObj.duration}s</i></td>
+          <td><span class="${
+            testCaseObj.isTestCaseSuccess ? "status-pass" : "status-fail"
+          }">
+            ${testCaseObj.isTestCaseSuccess ? "PASS" : "FAIL"}
+          </td>
+        </tr>`;
+
+      testCaseIndex++;
+    });
+
+    testNameIndex++; // Tambah nomor urut untuk testName berikutnya
+  });
+  return htmlContent;
 };
 
 module.exports = { getHtmlData };

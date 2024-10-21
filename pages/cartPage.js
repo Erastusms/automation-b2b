@@ -281,7 +281,18 @@ const cartPage = async (page) => {
     //   visible: true,
     // });
     await waiting(1000);
-    await page.click("#ucPaymentChannel > table > tbody > tr:nth-child(3)");
+    // Now, find the row containing "Via Bank Transfer BCA" and click on it
+    await page.evaluate(() => {
+      // Find the element containing "Via Bank Transfer BCA"
+      const targetRow = Array.from(document.querySelectorAll("tr")).find(
+        (row) => row.innerText.includes("Via Bank Transfer BCA")
+      );
+
+      if (targetRow) {
+        targetRow.click();
+      }
+    });
+    // await page.click("#ucPaymentChannel > table > tbody > tr:nth-child(3)");
     end = performance.now();
 
     const chooseMethodPayment = {
@@ -324,12 +335,14 @@ const cartPage = async (page) => {
       return window.getComputedStyle(element).display === "none";
     });
 
-    console.log("Sebelum diklik, elemen display: none?", isHidden);
+    // console.log("Sebelum diklik, elemen display: none?", isHidden);
 
+    await waiting(2000);
     start = performance.now();
     const kirimOrderBtn = await page.waitForSelector("#btnSave", {
       visible: true,
     });
+    // await page.click("#btnSave");
     await kirimOrderBtn.click();
     await waiting(1000);
     end = performance.now();

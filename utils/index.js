@@ -2,33 +2,21 @@ const fs = require("fs");
 const path = require("path");
 const moment = require("moment");
 const winston = require("winston");
-const logNode = require("node-file-logger");
-const { createLogger, format, transports } = require("winston");
+const { format } = require("winston");
 const { combine, timestamp, printf } = format;
 
-const optionsLogNode = {
-  folderPath: "./logs/",
-  dateBasedFileNaming: true,
-  fileNamePrefix: "DailyLogs_",
-  fileNameExtension: ".log",
-  dateFormat: "YYYY_MM_D",
-  timeFormat: "h:mm:ss A",
-};
-
-
 const localTimestamp = timestamp({
-  format: () => new Date().toLocaleString('id-ID', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  })
+  format: () =>
+    new Date().toLocaleString("id-ID", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    }),
 });
-
-logNode.SetUserOptions(optionsLogNode);
 
 const clickElementByXPath = async (xpath) => {
   const elements = document.evaluate(
@@ -89,20 +77,6 @@ const waitSelectorAdmin = async (page, selectorMenu, textSelector) => {
   );
 };
 
-const contentHeader = `
-   <span style="font-size: 10px;padding-left : 15px"><i>
-         This is a custom PDF for Automation Test Result
-       <span>B2C AstraOtoshop</span> (<span> https://astraotoshop.com </span>)</i>
-   </span>
-   `;
-
-const contentFooter = `
-        <span style="font-size: 10px;padding-left : 15px"><i>
-            Generated on: <span class="date"></span><br/>
-            Page <span class="pageNumber"></span> of <span class="totalPages "></span>
-        </span>
-        `;
-
 const logToFile = (message) => {
   const baseFolder = path.join(__dirname, "..", "logs"); // Folder 'logs' di dalam 'automation-b2b'
   const currentDate = moment().format("DD-MM-YYYY"); // Format tanggal dengan moment
@@ -135,13 +109,9 @@ const myFormat = printf(({ level, message, label, timestamp }) => {
 });
 
 const logger = winston.createLogger({
-  
   //level: "info", // Tingkat log minimal yang dicatat
   //format: winston.format.simple(), // Format log sederhana
-  format: combine(
-    localTimestamp,
-    myFormat
-  ),
+  format: combine(localTimestamp, myFormat),
   transports: [
     new winston.transports.Console(), // Catatan log ke konsol
     new winston.transports.File({ filename: "app.log" }), // Catatan log ke file 'app.log'
@@ -153,16 +123,6 @@ const logFormat = printf(({ level, message, timestamp }) => {
   const formattedDate = new Date().getTime();
   return `${formattedDate} | ${level.toUpperCase()} | ${message}`;
 });
-// Logger configuration
-const loggerNew = createLogger({
-  level: "info", // Bisa diubah ke 'error' jika hanya ingin mencatat error
-  format: combine(timestamp(), logFormat),
-  transports: [
-    new transports.File({
-      filename: `report-${new Date().getTime()}.log`,
-    }),
-  ],
-});
 
 module.exports = {
   clickElementByXPath,
@@ -173,6 +133,4 @@ module.exports = {
   logToFile,
   waitSelectorAdmin,
   logger,
-  logNode,
-  loggerNew,
 };

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {{reporthead}}
+  </head>
+  <body>
+    <h1>Automation Test Report</h1>
+    <tbody>
+      <div>
+        <tr>
+          <td>
+            <img
+              align="right"
+              src="https://storageb2cprod.blob.core.windows.net/asset-b2c-prod/aop/logo-aop.png"
+              alt="Astra OtoShop"
+              style="
+                border: 0;
+                height: auto;
+                line-height: 100%;
+                outline: none;
+                text-decoration: none;
+              "
+              width="140px"
+              height="52px"
+              border="0"
+            />
+          </td>
+        </tr>
+      </div>
+    </tbody>
+    <table class="aligned-table">
+      <tr>
+        <td><strong>Start Date</strong></td>
+        <td>: {{startDate}}</td>
+      </tr>
+      <tr>
+        <td><strong>End Date</strong></td>
+        <td>: {{endDate}}</td>
+      </tr>
+      <tr>
+        <td><strong>Duration</strong></td>
+        <td>: {{duration}}</td>
+      </tr>
+    </table>
+    <table>
+      <thead>
+        <tr>
+          <th>Test Case</th>
+          <th>Process</th>
+          <th>Execution Time (s)</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{rows}}
+      </tbody>
+    </table>
+  </body>
+</html>
