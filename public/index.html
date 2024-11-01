@@ -13,8 +13,9 @@
     </div>
     <script>
       async function callRun(env) {
-        await fetch(`/run?env=${env}`);
-        alert(`${env} button clicked and run() function called.`);
+        const response = await fetch(`/api/run?env=${env}`);
+        const data = await response.json();
+        alert(data.message || "An error occurred");
       }
     </script>
   </body>
