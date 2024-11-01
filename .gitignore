@@ -3,3 +3,4 @@ document/
 .env
 logs/
 app.log
+report/

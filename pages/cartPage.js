@@ -32,7 +32,6 @@ const cartPage = async (page) => {
   const cart_page = [];
   let isTestCaseSuccess = true;
   let isFromHomePage = true;
-  let start = performance.now();
   try {
     const open_cart_page = await cart(page, isFromHomePage);
     cart_page.push(open_cart_page);
@@ -73,6 +72,7 @@ const cartPage = async (page) => {
     const uploadBtn = await uploadDownload(page, "UPLOAD");
     cart_page.push(uploadBtn);
 
+    let start = performance.now();
     await waiting(2000);
 
     const btnSelectVoucher = await page.waitForSelector(cartSelectVoucher, {
@@ -335,7 +335,7 @@ const cartPage = async (page) => {
       return window.getComputedStyle(element).display === "none";
     });
 
-    // console.log("Sebelum diklik, elemen display: none?", isHidden);
+    console.log("Sebelum diklik, elemen display: none?", isHidden);
 
     await waiting(2000);
     start = performance.now();
@@ -353,7 +353,7 @@ const cartPage = async (page) => {
       isTestCaseSuccess,
     };
     cart_page.push(clickBtnKirimOrder);
-
+    waiting(2000);
     isHidden = await page.evaluate(() => {
       const element = document.getElementById("divStepConfirmationStock");
       return window.getComputedStyle(element).display === "none";
@@ -389,8 +389,6 @@ const cartPage = async (page) => {
         isTestCaseSuccess,
       };
       cart_page.push(clickButtonOK);
-
-      await waiting(1000);
     }
 
     if (isStockAvailable === "Y") {
@@ -409,9 +407,6 @@ const cartPage = async (page) => {
         isTestCaseSuccess,
       };
       cart_page.push(clickButtonOK);
-      await waiting(1000);
-
-      await page.waitForNavigation();
       // start = performance.now();
       // // console.log("Clicking the element OK...");
       // // await page.waitForSelector(".PaymentOnline_PaymentBox", {
@@ -447,6 +442,8 @@ const cartPage = async (page) => {
     // cart_page.push(deleteAllProduct);
 
     // }
+    await waiting(1000);
+    await page.waitForNavigation();
     return { cart_page };
   } catch (err) {
     isTestCaseSuccess = false;

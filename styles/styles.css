@@ -7,7 +7,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-family: Arial, sans-serif;
-  margin: 20px 0;
+  margin: 10px 0;
 }
 
 .aligned-table {
@@ -27,7 +27,7 @@ table {
 th,
 td {
   border: 1px solid #ddd;
-  padding: 12px;
+  padding: 4px 12px;
   text-align: center;
 }
 
@@ -42,10 +42,6 @@ th {
 tr:hover {
   background-color: #f1f1f1;
 }
-
-/* .centering {
-  text-align: center;
-} */
 
 .left-align {
   text-align: left;

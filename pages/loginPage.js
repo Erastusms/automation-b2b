@@ -7,13 +7,15 @@ const {
 } = require("../config");
 const { logToFile } = require("../utils");
 
-const loginPage = async (page) => {
+const loginPage = async (page, endX, endY) => {
   const options = {
     inputUsername,
     inputPassword,
     btnLogin,
     username,
     password,
+    endX,
+    endY,
   };
   try {
     // const login_failed = await login(page, username, "test");
