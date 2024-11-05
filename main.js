@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer");
+const chromium = require('chrome-aws-lambda');
 const { PuppeteerScreenRecorder } = require("puppeteer-screen-recorder");
 const { URL } = require("./config");
 const { selectorList } = require("./constant");
@@ -27,13 +28,19 @@ const logdatetime = moment().format("YYYY-MM-DD HH:mm:ss");
 
 // (async () => {
 const run = async (env) => {
+
+  // const browser = await puppeteer.launch({
+  //   headless: false,
+  //   defaultViewport: false,
+  //   args: ["--start-maximized"],
+  //   // slowMo: 100,
+  // });
+
   const browser = await puppeteer.launch({
-    headless: false,
-    defaultViewport: false,
-    args: ["--start-maximized"],
-    // slowMo: 100,
-  });
-  // const browser = await puppeteer.launch();
+    args: chromium.args,
+    executablePath: await chromium.executablePath,
+    headless: chromium.headless,
+});
 
   const page = await browser.newPage();
   const pages = await browser.pages();

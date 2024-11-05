@@ -7,7 +7,6 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.raw());
-// app.use(cors());
 
 app.use(express.static(path.join(__dirname)));
 
@@ -17,7 +16,8 @@ app.get("/run", async (req, res) => {
     await run(env);
     res.status(200).send(`run() called with environment: ${env}`);
   } catch (error) {
-    res.status(500).send("Error running Puppeteer");
+    console.error(error);
+    res.status(500).json({ error: "Failed to run Puppeteer function" });
   }
 });
 

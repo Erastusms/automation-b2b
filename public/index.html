@@ -13,7 +13,7 @@
     </div>
     <script>
       async function callRun(env) {
-        const response = await fetch(`/api/run?env=${env}`);
+        const response = await fetch(`/run?env=${env}`);
         const data = await response.json();
         alert(data.message || "An error occurred");
       }
