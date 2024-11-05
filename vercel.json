@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "builds": [{ "src": "api/run.js", "use": "@vercel/node" }],
+  "builds": [{ "src": "run.js", "use": "@vercel/node" }],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/run.js" },
+    { "src": "/(.*)", "dest": "/run.js" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }

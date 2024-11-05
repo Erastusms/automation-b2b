@@ -1,7 +1,13 @@
+require("dotenv").config();
+
 const express = require("express");
 const path = require("path");
 const { run } = require("./main");
 const app = express();
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.raw());
+// app.use(cors());
 
 app.use(express.static(path.join(__dirname)));
 
@@ -15,9 +21,11 @@ app.get("/run", async (req, res) => {
   }
 });
 
-app.get("/", (req, res) => res.status(200).json({
-  message: "Automation Testing B2B"
-}));
+app.get("/", (req, res) =>
+  res.status(200).json({
+    message: "Automation Testing B2B",
+  })
+);
 
 const PORT = 3000;
 app.listen(PORT, () => {
