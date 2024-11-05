@@ -1,12 +1,12 @@
 const express = require("express");
 const path = require("path");
-const { run } = require("../main");
+const { run } = require("./main");
 const app = express();
 
 app.use(express.static(path.join(__dirname)));
 
 app.get("/run", async (req, res) => {
-  const env = req.query.env;
+  const env = req.query.query;
   try {
     await run(env);
     res.status(200).send(`run() called with environment: ${env}`);
@@ -14,6 +14,10 @@ app.get("/run", async (req, res) => {
     res.status(500).send("Error running Puppeteer");
   }
 });
+
+app.get("/", (req, res) => res.status(200).json({
+  message: "Automation Testing B2B"
+}));
 
 const PORT = 3000;
 app.listen(PORT, () => {
