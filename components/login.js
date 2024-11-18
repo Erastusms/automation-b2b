@@ -1,5 +1,5 @@
 const { URL } = require("../config");
-const { timeCalc, logToFile, logger } = require("../utils");
+const { timeCalc, logToFile, logger, waiting } = require("../utils");
 const moment = require("moment");
 const {
   moveCursor,
@@ -101,7 +101,7 @@ module.exports = {
       //   btnLoginTargetX,
       //   btnLoginTargetY
       // );
-      // await waiting(1000);
+      await waiting(1000);
       // await page.mouse.move(btnLoginTargetX, btnLoginTargetY);
       // await page.mouse.click(btnLoginTargetX, btnLoginTargetY);
 

@@ -60,7 +60,7 @@ module.exports = {
       // const skuTroli = [];
       if (btnDetailSKU) {
         //logToFile("Klik lihat detail di home page")
-        logger.info(`Click Detail button at Home Page`);
+        logger.info(`Click Detail button`);
         // start = performance.now();
         const detailProduct = await page.waitForSelector(btnDetailSKU, {
           visible: true,

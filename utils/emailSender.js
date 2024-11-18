@@ -19,7 +19,7 @@ const emailSender = async (pdfFilePath) => {
   const mailOptions = {
     from: dataEmail.user,
     to: dataEmail.to,
-    // cc: dataEmail.cc,
+    cc: dataEmail.cc,
     subject: `Testing B2B - ${currentDate}`,
     text: `Testing B2B yang dilakukan pada ${currentDate} dengan report pada lampiran`,
     attachments: [
