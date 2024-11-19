@@ -9,7 +9,7 @@ const laporanPage = async (page) => {
   let start = performance.now();
   let isTestCaseSuccess = true;
   try {
-    await waiting(1000);
+    await waiting(2000);
     await Promise.all([
       page.click("#ProductApplication_linkLaporan"),
       page.click("#ProductApplication_ulLaporan > li:first-child"),
@@ -18,7 +18,7 @@ const laporanPage = async (page) => {
     let end = performance.now();
 
     const clickLaporan = {
-      testCase: "Click Menu Laporan",
+      testCase: "Klik Menu Laporan",
       duration: await timeCalc(end, start),
       isTestCaseSuccess,
     };
@@ -51,11 +51,42 @@ const laporanPage = async (page) => {
     if (isTextPresent) {
       // ini udah bisa nanti lanjut bikin if lagi aje
       console.log("Teks 'Tidak ada data dalam 31 hari terakhir' muncul.");
+      await page.select(optionStatusSelector, '1');
+  
+      await waiting(1000);
+      await page.click("#btnSearch.ButtonAction");
+      await waiting(1000);
+
+      await page.evaluate(() => {
+        const element = document.querySelector(".GridButtonView");
+        element.click(); // Mengklik elemen
+      });
+
+      await page.waitForNavigation({waitUntil: "networkidle2"})
+
+      start = performance.now();
+      const btnKembali = await page.waitForSelector("#btnCancel", {
+        visible: true,
+      });
+      const scrollLihatVA = await scrollElement(start, page, "#btnCancel");
+
+      laporan_page.push(scrollLihatVA);
+
+      await waiting(1000);
+      await btnKembali.click();
+      end = performance.now();
+      const lihatDetailOrder = {
+        testCase: "Lihat Detail Order Teratas",
+        duration: await timeCalc(end, start),
+        isTestCaseSuccess,
+      };
+
+      laporan_page.push(lihatDetailOrder);
     } else {
       logToFile("Ada Order yang tercreate");
       logToFile("Klik element payment");
       await page.evaluate(() => {
-        const element = document.querySelector(".GridButtonView");
+        const element = document.querySelector(".GridButtonEdit");
         element.click(); // Mengklik elemen
       });
       // Cetak seluruh ID ke console

@@ -1,8 +1,12 @@
 const fs = require("fs");
+const fsprom = require("fs").promises;
+
 const path = require("path");
 const moment = require("moment");
 const winston = require("winston");
 const { format } = require("winston");
+const pdf = require("html-pdf");
+const { BASE_DIRECTORY } = require("../config");
 const { combine, timestamp, printf } = format;
 
 const localTimestamp = timestamp({
@@ -34,20 +38,22 @@ const clickElementByXPath = async (xpath) => {
   return false;
 };
 
-const capitalizeArrayItems = (item) => {
-  // return arr.map((item) => {
-  const words = item.split("_");
-  return words
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+// const capitalizeArrayItems = (item) => {
+//   const words = item.split("_");
+//   return words
+//     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+//     .join(" ");
+// };
+
+const capitalizeArrayItems = (item) =>
+  item
+    .split("_")
+    .map((word) => word[0].toUpperCase() + word.slice(1))
     .join(" ");
-  // });
-};
 
 const timeCalc = async (end, start) => {
   let diff = (end - start) / 1000;
-  let roundDiff = diff.toFixed(2);
-
-  return roundDiff;
+  return diff.toFixed(2);
 };
 
 const dateDifference = async (end, start) => {
@@ -55,8 +61,7 @@ const dateDifference = async (end, start) => {
   let minutes = Math.floor(diff / 60000);
   let seconds = ((diff % 60000) / 1000).toFixed(0);
 
-  let result = `${minutes} minutes and ${seconds} seconds`;
-  return result;
+  return `${minutes} minutes and ${seconds} seconds`;
 };
 
 const waiting = (ms) => {
@@ -77,13 +82,14 @@ const waitSelectorAdmin = async (page, selectorMenu, textSelector) => {
   );
 };
 
+const getCurrentDate = (opt) =>
+  opt === "s" ? moment().format("YYYYMMDDHHmm") : moment().format("YYYY-MM-DD");
+
 const logToFile = (message) => {
-  const baseFolder = path.join(__dirname, "..", "logs"); // Folder 'logs' di dalam 'automation-b2b'
-  const currentDate = moment().format("DD-MM-YYYY"); // Format tanggal dengan moment
-  const currentTime = moment().format("YYYYMMDDHHmm"); // Format waktu dengan moment
-  const currentTimeInText = moment().format("YYYY-MM-DD HH:mm:ss"); // Format waktu dengan moment
-  const dateFolder = path.join(baseFolder, currentDate); // Subfolder dengan nama tanggal
-  const logFile = path.join(dateFolder, `${currentTime}.txt`); // File dengan nama waktu (hh-mm-ss.txt)
+  const baseFolder = path.join(__dirname, "..", "logs");
+  const currentTimeInText = moment().format("YYYY-MM-DD HH:mm:ss");
+  const dateFolder = path.join(baseFolder, getCurrentDate());
+  const logFile = path.join(dateFolder, `${getCurrentDate("s")}.txt`);
 
   // Buat folder logs jika belum ada
   if (!fs.existsSync(baseFolder)) {
@@ -95,15 +101,14 @@ const logToFile = (message) => {
     fs.mkdirSync(dateFolder, { recursive: true });
   }
 
-  const logMessage = `${currentTimeInText}: ${message}`; // Tulis pesan log ke file
+  const logMessage = `${currentTimeInText}: ${message}`;
   fs.appendFile(logFile, logMessage + "\n", (err) => {
     if (err) throw err;
   });
 
-  // Cetak log ke console juga
   console.log(currentTimeInText + ": " + message);
 };
-//let logdatetime =moment().format("YYYY-MM-DD HH:mm:ss")
+
 const myFormat = printf(({ level, message, label, timestamp }) => {
   return `${level}: ${timestamp} ${message}`;
 });
@@ -124,6 +129,98 @@ const logFormat = printf(({ level, message, timestamp }) => {
   return `${formattedDate} | ${level.toUpperCase()} | ${message}`;
 });
 
+const getHtmlData = async (testCase, startDate, endDate, duration) => {
+  const templatePath = path.join(__dirname, "../template/report.html");
+  const cssFilePath = path.join(__dirname, "../styles", "styles.css");
+  const cssContent = await fsprom.readFile(cssFilePath, "utf8");
+  const head = `
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">  
+   <title>Automation Testing</title>
+   <style>${cssContent}</style>`;
+
+  let htmlResult = fs.readFileSync(templatePath, "utf-8");
+  htmlResult = htmlResult.replace("{{reporthead}}", head);
+  htmlResult = htmlResult.replace("{{startDate}}", startDate);
+  htmlResult = htmlResult.replace("{{endDate}}", endDate);
+  htmlResult = htmlResult.replace("{{duration}}", duration);
+
+  // Panggil fungsi untuk memetakan data ke dalam HTML
+  const htmlReport = convertDataToHTML(testCase);
+  htmlResult = htmlResult.replace("{{rows}}", htmlReport);
+
+  fs.writeFileSync("test-report.html", htmlResult, "utf8");
+
+  console.log("HTML test report has been generated!");
+  return htmlResult;
+};
+
+// Fungsi untuk mapping data ke dalam format HTML
+const convertDataToHTML = (data) => {
+  let testNameIndex = 1; // Inisialisasi nomor urut untuk testName
+  let htmlContent = "";
+
+  Object.keys(data).forEach((testName) => {
+    let testCaseIndex = 1; // Inisialisasi nomor urut untuk testCase dalam setiap testName
+    const testCaseCount = data[testName].length; // Hitung jumlah testCase dalam satu testName
+
+    // Loop untuk setiap testCase dalam testName
+    data[testName].forEach((testCaseObj, index) => {
+      htmlContent += "<tr>";
+
+      // Hanya cetak testName di baris pertama, lalu gunakan rowspan untuk menggabungkan sel
+      if (index === 0) {
+        htmlContent += `<td class='left-align' rowspan="${testCaseCount}">
+        ${testNameIndex}. ${capitalizeArrayItems(testName)}</td>`;
+      }
+
+      htmlContent += `
+          <td class='left-align'>${testCaseIndex}. ${testCaseObj.testCase}</td>
+          <td><i>${testCaseObj.duration}s</i></td>
+          <td><span class="${
+            testCaseObj.isTestCaseSuccess ? "status-pass" : "status-fail"
+          }">
+            ${testCaseObj.isTestCaseSuccess ? "PASS" : "FAIL"}
+          </td>
+        </tr>`;
+
+      testCaseIndex++;
+    });
+
+    testNameIndex++; // Tambah nomor urut untuk testName berikutnya
+  });
+  return htmlContent;
+};
+
+const generatePDF = (htmlResult) => {
+  const folderLocator = BASE_DIRECTORY + getCurrentDate();
+  const pdfFilePath =
+    folderLocator + "/" + "Testing-B2B-" + getCurrentDate("s") + ".pdf";
+
+  const opt = { format: "Letter" };
+  console.log("folder", folderLocator);
+  fs.access(folderLocator, function (err) {
+    if (err && err.code === "ENOENT") {
+      fs.mkdir(folderLocator, { recursive: true }, (err) => {
+        if (err) throw err;
+      });
+    }
+  });
+
+  return new Promise((resolve, reject) => {
+    pdf.create(htmlResult, opt).toFile(pdfFilePath, (err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        logToFile(`PDF berhasil dibuat: ${res.filename}`);
+        resolve(res.filename);
+      }
+    });
+  });
+};
+
 module.exports = {
   clickElementByXPath,
   capitalizeArrayItems,
@@ -132,5 +229,7 @@ module.exports = {
   waiting,
   logToFile,
   waitSelectorAdmin,
+  getHtmlData,
+  generatePDF,
   logger,
 };
