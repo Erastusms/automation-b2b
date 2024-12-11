@@ -2,7 +2,7 @@ const { scrollElement } = require("../components");
 const { timeCalc, waiting, logToFile } = require("../utils");
 
 const FILTER_EXPIRED_NUMBER = "2";
-const optionStatusSelector = "#ddlStatus";
+const optionStatusSelector = "#ddlStatus.DropDownList";
 
 const laporanPage = async (page) => {
   const laporan_page = [];
@@ -13,7 +13,7 @@ const laporanPage = async (page) => {
     await Promise.all([
       page.click("#ProductApplication_linkLaporan"),
       page.click("#ProductApplication_ulLaporan > li:first-child"),
-      page.waitForNavigation({ waitUntil: "networkidle2" }),
+      page.waitForNavigation({ waitUntil: "networkidle0" }),
     ]);
     let end = performance.now();
 
@@ -25,16 +25,16 @@ const laporanPage = async (page) => {
 
     laporan_page.push(clickLaporan);
     // console.log(clickLaporan);
-    await waiting(1000);
-    await page.select(optionStatusSelector, FILTER_EXPIRED_NUMBER);
-    // await Promise.all([
-    //   page.waitForSelector("#ddlStatus", { visible: true }),
-    //   page.select("#ddlStatus", FILTER_EXPIRED_NUMBER),
-    // ]);
+    await waiting(2000);
+    // await page.select(optionStatusSelector, FILTER_EXPIRED_NUMBER);
+    await Promise.all([
+      page.waitForSelector("#ddlStatus", { visible: true }),
+      page.select("#ddlStatus", FILTER_EXPIRED_NUMBER),
+    ]);
 
     await waiting(1000);
     await page.click("#btnSearch.ButtonAction");
-    await waiting(1000);
+    await waiting(5000);
 
     // Periksa apakah teks "Tidak ada data dalam 31 hari terakhir" muncul
     const isTextPresent = await page.evaluate((FILTER_EXPIRED_NUMBER) => {
@@ -51,8 +51,8 @@ const laporanPage = async (page) => {
     if (isTextPresent) {
       // ini udah bisa nanti lanjut bikin if lagi aje
       console.log("Teks 'Tidak ada data dalam 31 hari terakhir' muncul.");
-      await page.select(optionStatusSelector, '1');
-  
+      await page.select(optionStatusSelector, "0");
+
       await waiting(1000);
       await page.click("#btnSearch.ButtonAction");
       await waiting(1000);
@@ -61,9 +61,7 @@ const laporanPage = async (page) => {
         const element = document.querySelector(".GridButtonView");
         element.click(); // Mengklik elemen
       });
-
-      await page.waitForNavigation({waitUntil: "networkidle2"})
-
+      
       start = performance.now();
       const btnKembali = await page.waitForSelector("#btnCancel", {
         visible: true,
