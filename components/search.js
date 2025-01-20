@@ -4,16 +4,16 @@ const {
 const { timeCalc } = require("../utils");
 
 module.exports = {
-  search: async (page) => {
+  search: async (page, searchWording, iterationNumber) => {
     let start = performance.now();
     let isTestCaseSuccess = true;
 
     try {
-      await page.type(searchField, searchWord);
+      await page.type(searchField, searchWording);
       end = performance.now();
 
       const inputSearchWord = {
-        testCase: "Input Search Word",
+        testCase: `Input Search: ${searchWording} `,
         duration: await timeCalc(end, start),
         isTestCaseSuccess,
       };
@@ -34,6 +34,12 @@ module.exports = {
         duration: await timeCalc(end, start),
         isTestCaseSuccess,
       };
+
+      const clickSearchField = await page.waitForSelector(searchField, {
+        visible: true,
+      });
+      await clickSearchField.click({ clickCount: 3 });
+      await page.keyboard.press("Backspace");
 
       return [inputSearchWord, clickBtnSearch];
     } catch (err) {

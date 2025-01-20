@@ -199,7 +199,13 @@ const generatePDF = (htmlResult) => {
   const pdfFilePath =
     folderLocator + "/" + "Testing-B2B-" + getCurrentDate("s") + ".pdf";
 
-  const opt = { format: "Letter" };
+  // const opt = { format: "Letter" };
+  // Konfigurasi PDF
+  const opt = {
+    format: "A4",
+    border: "10mm",
+    type: "pdf",
+  };
   console.log("folder", folderLocator);
   fs.access(folderLocator, function (err) {
     if (err && err.code === "ENOENT") {

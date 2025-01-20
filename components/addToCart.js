@@ -1,17 +1,19 @@
 const {
   selectorList: { btnAddTroliDetail, btnSuccessAddToCart },
 } = require("../constant");
-const { waiting, timeCalc, logToFile,logger } = require("../utils");
+const { waiting, timeCalc, logToFile, logger } = require("../utils");
 const { scrollElement } = require("./scrollElement");
 
 module.exports = {
-  addToCart: async (page, btnAddTroli, btnDetailSKU) => {
+  addToCart: async (page, skuAddTroli, skuAddDetail) => {
     let isTestCaseSuccess = true;
     let start = performance.now();
     let btnDetail,
       clickBtnAddTroli,
       btnOKAfterAddToCart,
       end = "";
+    const selectorAddTroli = "#btnAddToCart_" + skuAddTroli;
+    const selectorDetailSKU = "#btnProductDetails_" + skuAddDetail;
     const testing = [];
 
     try {
@@ -58,11 +60,11 @@ module.exports = {
       // testing.push(scroll_element);
 
       // const skuTroli = [];
-      if (btnDetailSKU) {
+      if (skuAddDetail) {
         //logToFile("Klik lihat detail di home page")
         logger.info(`Click Detail button`);
         // start = performance.now();
-        const detailProduct = await page.waitForSelector(btnDetailSKU, {
+        const detailProduct = await page.waitForSelector(selectorDetailSKU, {
           visible: true,
         });
 
@@ -85,7 +87,7 @@ module.exports = {
         end = performance.now();
 
         clickBtnAddTroli = {
-          testCase: "Click Button Add To Cart",
+          testCase: `Click Button Add To Cart for SKU: ${skuAddDetail}`,
           duration: await timeCalc(end, start),
           isTestCaseSuccess,
         };
@@ -115,18 +117,20 @@ module.exports = {
         //   });
         //logToFile("Klik tambah ke troli di home page")
         logger.info(`Click Add to Cart Button at Home Page`);
-
-        
-        const addToCartSKU = await page.waitForSelector(btnAddTroli, {
+        const addToCartSKU = await page.waitForSelector(selectorAddTroli, {
           visible: true,
         });
-        const scroll_element = await scrollElement(start, page, btnAddTroli);
+        const scroll_element = await scrollElement(
+          start,
+          page,
+          selectorAddTroli
+        );
         testing.push(scroll_element);
 
         await addToCartSKU.click();
         end = performance.now();
         clickBtnAddTroli = {
-          testCase: "Click Button Add To Cart",
+          testCase: `Click Button Add To Cart for SKU: ${skuAddTroli}`,
           duration: await timeCalc(end, start),
           isTestCaseSuccess,
         };

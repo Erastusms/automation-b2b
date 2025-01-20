@@ -211,11 +211,11 @@ const cartPage = async (page) => {
     //   };
     //   cart_page.push(clickUseVoucher1);
 
-    //   console.log("Waiting for selector...");
+    console.log("Waiting for selector...");
     //   start = performance.now();
-    //   await page.waitForSelector("#ucModal1_ButtonText", {
-    //     visible: true,
-    //   }); // Waiting for the button to be visible
+    await page.waitForSelector("#ucModal1_ButtonText", {
+      visible: true,
+    }); // Waiting for the button to be visible
     //   await page.waitForSelector("#ucModal1_Body", {
     //     visible: true,
     //   });
@@ -353,7 +353,7 @@ const cartPage = async (page) => {
       isTestCaseSuccess,
     };
     cart_page.push(clickBtnKirimOrder);
-    waiting(2000);
+    await waiting(2000);
     isHidden = await page.evaluate(() => {
       const element = document.getElementById("divStepConfirmationStock");
       return window.getComputedStyle(element).display === "none";

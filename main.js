@@ -1,5 +1,7 @@
 const puppeteer = require("puppeteer");
 const { PuppeteerScreenRecorder } = require("puppeteer-screen-recorder");
+const path = require("path");
+
 const { URL } = require("./config");
 const { selectorList } = require("./constant");
 const {
@@ -15,7 +17,6 @@ const {
   timeCalc,
   logToFile,
   logger,
-  waiting,
 } = require("./utils");
 const { successOrderWithVoucher } = require("./test/scenario-1");
 const { getHtmlData, generatePDF } = require("./utils");
@@ -30,6 +31,7 @@ const run = async (env = "DEV") => {
     headless: false,
     defaultViewport: false,
     args: ["--start-maximized"],
+    // args: ["--start-maximized","--no-sandbox", "--disable-setuid-sandbox"],
     // slowMo: 100,
   });
 
@@ -48,12 +50,15 @@ const run = async (env = "DEV") => {
     let start = performance.now();
     await page.goto(URL.home, { timeout: 0, waitUntil: "networkidle0" });
     let end = performance.now();
-    const loadWeb = {
-      testCase: "Memuat Halaman B2B",
-      duration: await timeCalc(end, start),
-    };
-    console.log("Memuat Halaman B2B");
-    console.log(loadWeb);
+
+    const loading_web_success = [
+      {
+        testCase: "Memuat Halaman B2B",
+        duration: await timeCalc(end, start),
+        isTestCaseSuccess: true,
+      },
+    ];
+
     logger.info(
       `================================ AOS TESTING B2B ${logdatetime}  ================================`
     );
@@ -82,13 +87,21 @@ const run = async (env = "DEV") => {
       page.waitForNavigation(),
     ]);
 
-    // page.on("response", async (response) => {
-    //   // console.log(response.url()[0]);
-    //   if (response.status() === 200) {
-    //     const webURL = response.url();
-    //     console.log(`URL: ${webURL}`);
-    //   }
-    // });
+    // Event listener untuk menangkap response
+    page.on("response", (response) => {
+      const url = response.url();
+      const status = response.status();
+
+      if (/\.aspx$/.test(url)) {
+        console.log("Masuk halaman");
+        logToFile(`URL: ${url}, Status: ${status}`);
+      }
+
+      if (status >= 400) {
+        console.error(`Request to ${url} failed with status ${status}`);
+        logToFile(`Request to ${url} failed with status ${status}`);
+      }
+    });
 
     const loginTest = await loginPage(page, endX, endY);
     // console.log("loginTest");
@@ -115,13 +128,14 @@ const run = async (env = "DEV") => {
     // console.log(laporanTest);
 
     const mergedObject = {
+      // loading_web_success,
       ...loginTest,
       ...homeTest,
       ...searchTest,
       ...cartTest,
       ...laporanTest,
     };
-    // console.log(mergedObject);
+    console.log(mergedObject);
 
     // const createSuccessOrder = await successOrderWithVoucher(page);
 
@@ -137,6 +151,29 @@ const run = async (env = "DEV") => {
     );
 
     const pdfFilePath = await generatePDF(htmlResult);
+
+    // const mergedObject2 = { ...searchTest };
+    // const htmlResult2 = await getHtmlData(
+    //   mergedObject2,
+    //   startDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB",
+    //   endDate.toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) + " WIB",
+    //   dateDiff
+    // );
+    // const pdfFilePath2 = await generatePDF(htmlResult2);
+
+    // Load HTML ke dalam page
+    // console.log("load content to puppeter");
+    // await page.setContent(htmlResult, { waitUntil: "domcontentloaded" });
+
+    // Konversi HTML ke PDF
+    // console.log("jalanin page.pdf");
+    // await page.evaluate(() => matchMedia("screen").matches);
+    // await page.pdf({
+    //   path: path.resolve(__dirname, "output-test2.pdf"),
+    //   format: "A4",
+    //   printBackground: true,
+    // });
+    // console.log("berhasil generate page.pdf");
 
     if (env === "PROD") {
       await emailSender(pdfFilePath);
@@ -158,6 +195,7 @@ const run = async (env = "DEV") => {
   }
 };
 
-run();
+run("PROD");
+// run();
 
 module.exports = { run };

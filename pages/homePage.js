@@ -5,7 +5,7 @@ const {
 } = require("../constant");
 
 const homePage = async (page) => {
-  await page.goto(URL.home, { timeout: 0, waitUntil: "networkidle0" });
+  // await page.goto(URL.home, { timeout: 0, waitUntil: "networkidle0" });
 
   try {
     const home_view_point = await clickPoinKoin(page, "Point");
